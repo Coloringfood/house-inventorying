@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>House Inventorying</title>
+    <link rel="profile" href="http://www.w3.org/2005/10/profile"/>
+    <link rel="icon" type="image/png" href="/public/assets/images/favicon.ico">
+    <!-- build:style vendor -->
+
+    <link rel="stylesheet" type="text/css" href="/public/assets/ext/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="/public/assets/ext/angular-ui-notification/dist/angular-ui-notification.min.css">
+    <!-- Default CSS Theme -->
+    <link rel="stylesheet" type="text/css" href="/public/assets/css/themes/slate.css">
+    <!-- /build -->
+    <!-- build:style app -->
+    <link rel="stylesheet" href="/public/assets/css/base.css">
+    <!-- /build -->
+
+    <base href="/">
+</head>
+
+<body ng-app="HouseInventoryingApp">
+<nav class="navbar navbar-default navbar-fixed-top" ng-controller="HeaderController">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" ng-click="toggleMenu()">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">House Inventorying</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse" ng-class="{in:showMenu}">
+            <ul class="nav navbar-nav">
+                <li ng-class="{ active: isActive('/')}"><a href="#/" ng-click="toggleMenu()">Home</a></li>
+                <li ng-class="{ active: isActive('/houses')}" ng-show="authenticated" ng-click="toggleMenu()"
+                    class="ng-cloak">
+                    <a href="#/houses">Vacations</a>
+                </li>
+                <li ng-class="{ active: isActive('/inventorying')}" ng-show="authenticated" ng-click="toggleMenu()"
+                    class="ng-cloak">
+                    <a href="#/inventorying">Inventory Items</a>
+                </li>
+            </ul>
+            <ul class="ng-cloak nav navbar-nav navbar-right">
+                <li ng-class="{ active: isActive('/login')}" ng-show="!authenticated" ng-click="toggleMenu()">
+                    <a href="#/login">Login</a>
+                </li>
+                <li ng-class="{ active: isActive('/settings')}" ng-show="authenticated" ng-click="toggleMenu()">
+                    <a href="#/settings">Welcome {{name}}</a>
+                </li>
+                <li ng-class="{ active: isActive('/logout')}" ng-show="authenticated" ng-click="toggleMenu()">
+                    <a href="#/logout">Logout</a>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container" ng-view class="ng-cloak"></div>
+<!-- build:script vendor -->
+<script type="text/javascript" src="/public/assets/ext/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular/angular.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-animate/angular-animate.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-jwt/dist/angular-jwt.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-touch/angular-touch.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-sanitize/angular-sanitize.js"></script>
+<script type="text/javascript" src="/public/assets/ext/angular-cookies/angular-cookies.js"></script>
+<script type="text/javascript"
+        src="/public/assets/ext/angular-ui-notification/dist/angular-ui-notification.js"></script>
+<script type="text/javascript" src="/public/assets/ext/ngstorage/ngStorage.js"></script>
+<script type="text/javascript" src="/public/assets/ext/lodash/lodash.js"></script>
+<script type="text/javascript" src="/public/assets/ext/restangular/dist/restangular.js"></script>
+
+<!-- /build -->
+<!-- build:script app -->
+<script type="text/javascript" src="/public/common/constants.js"></script>
+<script type="text/javascript" src="/public/common/HouseInventoryingApp.js"></script>
+<script type="text/javascript" src="/public/common/restangularFactory.js"></script>
+
+<script type="text/javascript" src="/public/common/controllers.js"></script>
+<script type="text/javascript" src="/public/common/injectCss.js"></script>
+<script type="text/javascript" src="/public/common/directives/editFactors.js"></script>
+<script type="text/javascript" src="/public/common/directives/focusMe.js"></script>
+<script type="text/javascript" src="/public/common/directives/viewFactors.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/EditItemController.modal.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/EditVacationController.modal.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/HomeController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/ItemsController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/LoginController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/LogoutController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/PackingController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/RegisterController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/SettingsController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/controllers/VacationsController.js"></script>
+<script type="text/javascript" src="/public/house-inventorying/services/HouseInventoryingService.js"></script>
+<!-- /build -->
+</body>
+</html>

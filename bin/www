@@ -1,0 +1,147 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('house-inventorying:server');
+var fs = require('fs');
+var config = require('../config/config.json');
+debug("Starting");
+
+/**
+ * Migrations
+ */
+var db = require('./../models/database');
+var Umzug = require('umzug');
+var umzug = new Umzug({
+    storage: 'sequelize',
+    storageOptions: {
+        sequelize: db.connection
+    },
+    migrations: {
+        params: [db.connection.getQueryInterface(), db.connection.constructor, function () {
+            throw new Error('Migration tried to use old style "done" callback. Please upgrade to "umzug" and return a promise instead.');
+        }],
+        path: './migrations',
+        pattern: /\.js$/
+    }
+});
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP or HTTPS server.
+ */
+function setup() {
+    try {
+        var options = {
+            key: fs.readFileSync(config.ssl.key),
+            cert: fs.readFileSync(config.ssl.cert),
+            passphrase: config.ssl.passphrase
+        };
+        debug("SSL Options");
+        debug(options);
+        return options;
+    }
+    catch (e) {
+        debug("No SSL Configured");
+    }
+}
+
+function start(app, options) {
+    if (options)
+        return require('https').createServer(options, app);
+
+    return require('http').createServer(app);
+}
+
+var options = setup();
+var server = start(app, options);
+
+/**
+ * Run Migrations.
+ */
+
+debug("Starting Migrations");
+umzug.up()
+    .catch(function (err) {
+        debug(err.stack);
+        debug("Migrations failed: %o", err);
+        return "Failed";
+    })
+    .then(function (migrations) {
+        debug("Migrations success: %o", migrations);
+        /**
+         * Listen on provided port, on all network interfaces.
+         */
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+    });
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}

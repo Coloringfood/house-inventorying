@@ -1,0 +1,76 @@
+@import 'inventorying';
+
+body {
+  padding-top: 70px;
+}
+
+.dropdown-menu{
+  padding-left: 8px;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.center-text-on-field {
+  line-height: 30px;
+}
+
+.padding {
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #0000FF;
+}
+
+.in-between-bordered:not(:last-child):after {
+  content: "";
+  display: block;
+  border-bottom: 1px solid #ccc;
+  margin: 0 15px;
+}
+
+.row {
+  padding-bottom: 5px
+}
+
+body {
+  font-size: 12px;
+}
+
+ul.no-indent {
+  padding-left: 10px;
+  &.no-bullet {
+    padding-left: 0;
+  }
+}
+
+ul.no-bullet {
+  list-style: none;
+}
+
+.navbar-inverse.padded {
+  padding: 5px 39px 5px 0;
+}
+
+.float-right {
+  float: right;
+}
+
+.ng-cloak{
+  display:none;
+}
+
+.tooltip.large-tooltip{
+  opacity: 1;
+  .tooltip-inner{
+    max-width: 400px;
+
+    .panel {
+      margin-bottom: auto;
+    }
+  }
+}

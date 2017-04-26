@@ -1,0 +1,222 @@
+<div class="modal-header">
+    <div class="col-sm-12">
+        <h3 class="modal-title" id="modal-title">Editing Item {{vm.item.name}}</h3>
+    </div>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row in-between-bordered">
+        <div class="col-sm-3">Name:</div>
+        <div class="col-sm-9">
+            <input type="text" ng-model="vm.newItem.name" maxlength="30" focus-me="true">
+        </div>
+    </div>
+    <div class="row in-between-bordered">
+        <div class="col-sm-3">Item Settings:</div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.newItem.personal">
+                            Private Item &nbsp;
+                            <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="top-right"
+                               uib-tooltip-html="vm.privateItemTooltip"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.newItem.optional">
+                            This item is optional to pack &nbsp;
+                            <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="top-right"
+                               uib-tooltip-html="vm.optionalItemTooltip"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row in-between-bordered">
+        <div class="col-sm-3">Item Category:
+            <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="top-right"
+               uib-tooltip-html="vm.itemCategoryTooltip"></i>
+        </div>
+        <div class="col-sm-9">
+            <div class="btn-group input-group-btn" uib-dropdown is-open="status.categoryisopen">
+                <button class="btn btn-primary" type="button" id="category-button" uib-dropdown-toggle>
+                    {{vm.newItem.category.name}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="category-button">
+                    <li ng-repeat="choice in vm.categories" ng-click="vm.setCategoryType(choice)"
+                        class="pointer">
+                        {{choice.name}} (ie: {{choice.description}})
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row in-between-bordered">
+        <div class="col-sm-3">
+            Age/Quantity
+            <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="bottom-right"
+               uib-tooltip-html="vm.ageQuantityTooltip"></i>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.showAll" ng-click="vm.updateAges('all')">
+                            All Ages pack the same
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="vm.showAll">
+                <div class="col-md-2">Everyone</div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-addon" uib-tooltip-html="vm.itemsAmountTooltip">Items</span>
+                        <input type="text" class="form-control" placeholder="Enter Amount"
+                               ng-model="vm.allItems" ng-change="vm.updateAllAges()">
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-addon" uib-tooltip-html="vm.itemsDaysTooltip">Days</span>
+                        <input type="number" class="form-control" placeholder="Days per Amount"
+                               ng-model="vm.allDays" ng-change="vm.updateAllAges()">
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" ng-show="!vm.showAll">
+                <div class="col-sm-4">
+                    Specifically Applied Ages:
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.show.Baby" ng-click="vm.updateAges('Baby')">
+                            Baby
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.show.Toddler" ng-click="vm.updateAges('Toddler')">
+                            Toddler
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.show.Kid" ng-click="vm.updateAges('Kid')">
+                            Kid
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="vm.show.Adult" ng-click="vm.updateAges('Adult')">
+                            Adult
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div ng-repeat="age in vm.newItem.ages" class="row" ng-show="!vm.showAll">
+                <div class="col-md-2">{{age.name}}</div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-addon" uib-tooltip-html="vm.itemsAmountTooltip">Items</span>
+                        <input type="text" class="form-control" placeholder="Enter Amount"
+                               ng-model="age.items_per_age.items">
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-addon" uib-tooltip-html="vm.itemsDaysTooltip">Days</span>
+                        <input type="number" class="form-control" placeholder="Days per Amount"
+                               ng-model="age.items_per_age.days">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row in-between-bordered">
+        <div class="col-sm-3">Factors
+            <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="top-right"
+               uib-tooltip-html="vm.factorsTooltip"></i>
+            <br>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.newItem.always_needed">
+                    Need on Every Vacation &nbsp;
+                    <i class="pull-right glyphicon glyphicon-question-sign" tooltip-placement="top-right"
+                       uib-tooltip-html="vm.neededEveryVacationTooltip"></i>
+                </label>
+            </div>
+            <br>
+            <button type="button" class="btn btn-default" ng-click="vm.openNewFactor()" ng-show="!vm.showNewFactor">
+                Create Factor
+            </button>
+        </div>
+        <div class="col-sm-9" ng-hide="vm.newItem.always_needed">
+            <edit-factors factors="vm.factors" selected="vm.newItem.factors" ng-show="!vm.showNewFactor"
+                          settings="vm.factorSettings"></edit-factors>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group" ng-show="vm.showNewFactor">
+                        <span class="input-group-addon">
+                            Name
+                        </span>
+                        <input type="text" class="form-control" placeholder="Name of Factor"
+                               ng-model="vm.newFactor.name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group" ng-show="vm.showNewFactor">
+                        <span class="input-group-addon">
+                            Type
+                        </span>
+                        <div class="btn-group input-group-btn" uib-dropdown is-open="status.isopen">
+                            <button class="btn btn-primary" type="button" id="single-button" uib-dropdown-toggle>
+                                {{vm.newFactor.type}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="single-button">
+                                <li ng-repeat="choice in vm.types" ng-click="vm.setFactorType(choice)"
+                                    class="pointer">
+                                    {{choice}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="vm.showNewFactor">
+                <div class="col-md-8"></div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default" ng-click="vm.createFactor()">
+                        Create Factor
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default" ng-click="vm.closeNewFactor()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+</div>

@@ -1,0 +1,92 @@
+<uib-accordion close-others="true">
+    <div uib-accordion-group class="panel-default" is-open="status.personalSettings">
+        <uib-accordion-heading>
+            Adjust Personal Information <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.personalSettings, 'glyphicon-chevron-right': !status.personalSettings}"></i>
+        </uib-accordion-heading>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Adjust Personal Settings</h2>
+                <form name="form" ng-submit="vm.save()" role="form">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group" ng-class="{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }">
+                                <label for="firstName">First name</label>
+                                <input type="text" name="firstName" id="firstName" class="form-control" ng-model="vm.user.firstName" required />
+                                <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">First name is required</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group" ng-class="{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }">
+                                <label for="lastName">Last name</label>
+                                <input type="text" name="lastName" id="lastName" class="form-control" ng-model="vm.user.lastName" required />
+                                <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">Last name is required</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && (form.email.$error.required || form.email.$error.email) }">
+                        <label for="username">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" ng-model="vm.user.email" required />
+                        <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">Email is required</span>
+                        <span ng-show="form.email.$dirty && form.email.$error.email" class="help-block">Email must be properly formatted</span>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" ng-model="vm.user.username" required />
+                        <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password (Warning, this is not https so the password is not encrypted. DON'T use a password you use for anything else)</label>
+                        <input type="password" name="password" id="password" class="form-control" ng-model="vm.user.password" />
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error': form.age.$dirty && form.age.$error.required }">
+                        <label for="age">Age Group</label>
+                        <select name="age" id="age" ng-model="vm.user.age.name" class="form-control" required>
+                            <option ng-repeat="age in vm.ages" value="{{age.name}}">{{age.name}} ({{age.range}})</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div uib-accordion-group class="panel-default" is-open="status.familySettings">
+        <uib-accordion-heading>
+            Manage Family <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.familySettings, 'glyphicon-chevron-right': !status.familySettings}"></i>
+        </uib-accordion-heading>
+        TODO: Make this section have family stuff
+    </div>
+    <div uib-accordion-group class="panel-default" is-open="status.customSettings">
+        <uib-accordion-heading>
+            Custom settings <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.customSettings, 'glyphicon-chevron-right': !status.customSettings}"></i>
+        </uib-accordion-heading>
+        <div class="row">
+            <div class="col-md-10">
+                <div class="input-group">
+                        <span class="input-group-addon">
+                            Css Theme
+                        </span>
+                    <div class="btn-group input-group-btn" uib-dropdown is-open="status.isopen">
+                        <button class="btn btn-primary" type="button" id="single-button" uib-dropdown-toggle>
+                            {{vm.user.settings.cssTheme}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="single-button">
+                            <li ng-click="vm.setSelectedTheme('Default')" class="pointer">Default</li>
+                            <li ng-repeat="choice in vm.themes" ng-click="vm.setSelectedTheme(choice)"
+                                class="pointer">
+                                {{choice}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-default" ng-click="vm.useCss()">
+                    Use Theme
+                </button>
+            </div>
+        </div>
+    </div>
+</uib-accordion>

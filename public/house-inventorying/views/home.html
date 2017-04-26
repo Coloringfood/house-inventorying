@@ -1,0 +1,63 @@
+<div class="jumbotron">
+    <h1>House Inventorying</h1>
+    <p>
+        Have you ever had something but just can't remember where you stashed it? Well, if you start using this
+        house-inventorying app, you won't need to worry about it. After spending hours of inventorying of your items
+        (who knew your job at the department store would pay off) you can now have all items locations at your
+        fingertips!
+    </p>
+    <p>
+        NOTE: This site is only in its alpha stages. So if you find any problems or have any questions please contact
+        me. or comment on my repo:
+    </p>
+    <uib-accordion close-others="false">
+        <div uib-accordion-group class="panel-default" is-open="status.instructions">
+            <uib-accordion-heading>
+                Feature Notes
+                <i class="pull-right glyphicon"
+                   ng-class="{'glyphicon-chevron-down': status.instructions, 'glyphicon-chevron-right': !status.instructions}"></i>
+            </uib-accordion-heading>
+            <p>
+                Working Features:
+            </p>
+            <ul>
+                <li>Creating of a House</li>
+                <li>Inventorying of your items in your house</li>
+                <li>Searching for locations of items</li>
+                <li>Searching for locations of types of items</li>
+            </ul>
+            <p>
+                Upcoming Features:
+            </p>
+            <ul>
+                <li>Logging in</li>
+                <li>2D Rendering of floors (Map View)</li>
+                <li>Sharing your house with another user</li>
+                <li>Searching items will highlight their location on a map where it should be located</li>
+            </ul>
+        </div>
+    </uib-accordion>
+</div>
+<div class="row row-offcanvas row-offcanvas-right" ng-if="vm.authenticated">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Your Houses</h2>
+            </div>
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th class="col-md-2">House</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                    <tr ng-repeat="house in vm.housesList track by house.id">
+                        <td>{{house.name}}</td>
+                        <td>
+                            <a class="btn" href="#/viewing/{{house.id}}">pack</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
