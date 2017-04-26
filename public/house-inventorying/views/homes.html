@@ -1,0 +1,71 @@
+<div class="jumbotron">
+    <h1>Welcome to the Homes Page</h1>
+    <p>
+        This page lists all the homes you have access to. It also allows you to create a new home to start inventorying for.
+    </p>
+    <uib-accordion close-others="false" class="packing-list">
+        <div uib-accordion-group class="panel-default" is-open="status.instructions">
+            <uib-accordion-heading>
+                Instructions for making a Home
+                <i class="pull-right glyphicon"
+                   ng-class="{'glyphicon-chevron-down': status.instructions, 'glyphicon-chevron-right': !status.instructions}"></i>
+            </uib-accordion-heading>
+            <ul>
+                <li>Click the Create Home Button below</li>
+                <li>Fill in the name of the home</li>
+                <li>Add some details about the house</li>
+            </ul>
+        </div>
+    </uib-accordion>
+</div>
+<div class="container-fluid">
+    <div class="title"><h2>{{vm.name}}</h2></div>
+    <div class="tile">
+        <div class="tileContent">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-sm-6"><h4>All Homes</h4></div>
+                            <div class="col-sm-6 text-right">
+                                <button type="button" class="btn btn-default  btn-info" ng-click="vm.createHome()">
+                                    Create Home
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Factors</th>
+                        </tr>
+                        <tr ng-repeat="home in vm.homesList track by home.id">
+                            <td>
+                                <a class="btn" ng-click="vm.editHome(home)">edit</a>
+                                <a class="btn" ng-click="vm.deleteHome(home)">delete</a>
+                                <a class="btn" ng-if="vm.authenticated" href="#/packing/{{home.id}}">pack</a>
+                                <a class="btn" ng-if="!vm.authenticated" href="#/packing/{{$index}}">pack</a>
+                            </td>
+                            <td>{{home.name}}</td>
+                            <td>
+                                {{home.start_date | date : "EEEE - MMM dd, y"}}
+                            </td>
+                            <td>
+                                {{home.end_date | date : "EEEE - MMM dd, y"}}
+                            </td>
+                            <td>
+                                <view-factors factors="vm.factors" selected="home.factors"
+                                              settings="vm.factorSettings"></view-factors>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

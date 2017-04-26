@@ -22,15 +22,15 @@ powerdialerApp.factory(
                 return factorData;
             }
 
-            function convertVacationForApi(vacationData) {
-                return vacationData;
+            function convertHomeForApi(homeData) {
+                return homeData;
             }
 
-            HouseInventoryingService.convertVacationForUi = (vacationData) =>{
+            HouseInventoryingService.convertHomeForUi = (homeData) =>{
                 let format = "yyyy-MM-dd";
-                vacationData.start_date = uibDateParser.parse(vacationData.start_date.split("T")[0], format);
-                vacationData.end_date = uibDateParser.parse(vacationData.end_date.split("T")[0], format);
-                return vacationData;
+                homeData.start_date = uibDateParser.parse(homeData.start_date.split("T")[0], format);
+                homeData.end_date = uibDateParser.parse(homeData.end_date.split("T")[0], format);
+                return homeData;
             };
 
             HouseInventoryingService.getAllItems = () => {
@@ -106,70 +106,70 @@ powerdialerApp.factory(
                     });
             };
 
-            HouseInventoryingService.getAllVacations = () => {
-                return restangularFactory.one('vacations').get()
+            HouseInventoryingService.getAllHomes = () => {
+                return restangularFactory.one('homes').get()
                     .then(function (returnedData) {
                         if (debugging) {
-                            console.log("getAllVacations: ", returnedData);
+                            console.log("getAllHomes: ", returnedData);
                         }
-                        return $q.all(returnedData.map(HouseInventoryingService.convertVacationForUi))
+                        return $q.all(returnedData.map(HouseInventoryingService.convertHomeForUi))
                             .then(function (returnedData) {
                                 if (debugging) {
-                                    console.log("Converted Vacation Data: ", returnedData);
+                                    console.log("Converted Home Data: ", returnedData);
                                 }
                                 return returnedData;
                             });
                     });
             };
 
-            HouseInventoryingService.getVacation = (vacationId) => {
-                return restangularFactory.one('vacations', vacationId).get()
+            HouseInventoryingService.getHome = (homeId) => {
+                return restangularFactory.one('homes', homeId).get()
                     .then(function (returnedData) {
-                        let vacation = HouseInventoryingService.convertVacationForUi(returnedData);
+                        let home = HouseInventoryingService.convertHomeForUi(returnedData);
                         if (debugging) {
-                            console.log("getVacation: ", vacation);
+                            console.log("getHome: ", home);
                         }
-                        return vacation;
+                        return home;
                     });
             };
 
-            HouseInventoryingService.saveVacation = (vacationData, vacationId) => {
-                let convertedVacation = convertVacationForApi(vacationData);
+            HouseInventoryingService.saveHome = (homeData, homeId) => {
+                let convertedHome = convertHomeForApi(homeData);
 
-                return restangularFactory.allUrl('.').customPUT(convertedVacation, "vacations/" + vacationId)
+                return restangularFactory.allUrl('.').customPUT(convertedHome, "homes/" + homeId)
                     .then(function (returnedData) {
                         if (debugging) {
-                            console.log("saveVacation: ", returnedData);
-                        }
-                        return returnedData;
-                    });
-            };
-
-            HouseInventoryingService.createVacation = (vacationData) => {
-                let convertedVacation = convertVacationForApi(vacationData);
-
-                return restangularFactory.all('vacations').post(convertedVacation)
-                    .then(function (returnedData) {
-                        if (debugging) {
-                            console.log("createVacation: ", returnedData);
+                            console.log("saveHome: ", returnedData);
                         }
                         return returnedData;
                     });
             };
 
-            HouseInventoryingService.deleteVacation = (vacationId) => {
-                return restangularFactory.one('vacations').all(vacationId).remove()
+            HouseInventoryingService.createHome = (homeData) => {
+                let convertedHome = convertHomeForApi(homeData);
+
+                return restangularFactory.all('homes').post(convertedHome)
                     .then(function (returnedData) {
                         if (debugging) {
-                            console.log("deleteVacation: ", returnedData);
+                            console.log("createHome: ", returnedData);
                         }
                         return returnedData;
                     });
             };
 
-            HouseInventoryingService.getAllPackingItems = (vacationId) => {
+            HouseInventoryingService.deleteHome = (homeId) => {
+                return restangularFactory.one('homes').all(homeId).remove()
+                    .then(function (returnedData) {
+                        if (debugging) {
+                            console.log("deleteHome: ", returnedData);
+                        }
+                        return returnedData;
+                    });
+            };
+
+            HouseInventoryingService.getAllPackingItems = (homeId) => {
                 let userId = authService.authenticated.tokenData.userId;
-                return restangularFactory.one('vacations', vacationId).one('pack', userId).get()
+                return restangularFactory.one('homes', homeId).one('pack', userId).get()
                     .then(function (returnedData) {
                         if (debugging) {
                             console.log("getAllPackingItems: ", returnedData);
@@ -178,14 +178,14 @@ powerdialerApp.factory(
                     });
             };
 
-            HouseInventoryingService.generatePackingList = (vacationData, ageId) => {
-                let convertedVacation = convertVacationForApi(vacationData);
-                convertedVacation.ageId = ageId;
+            HouseInventoryingService.generatePackingList = (homeData, ageId) => {
+                let convertedHome = convertHomeForApi(homeData);
+                convertedHome.ageId = ageId;
 
-                return restangularFactory.one('vacations').all('pack').post(convertedVacation)
+                return restangularFactory.one('homes').all('pack').post(convertedHome)
                     .then(function (returnedData) {
                         if (debugging) {
-                            console.log("createVacation: ", returnedData);
+                            console.log("createHome: ", returnedData);
                         }
                         return returnedData;
                     });

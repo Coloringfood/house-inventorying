@@ -13,8 +13,8 @@ powerdialerApp.controller('VacationsPageController',
 
             let vm = this;
             let debugging = ENV.environment == 'dev';
-            vm.name = "Vacations";
-            vm.vacationsList = [];
+            vm.name = "Homes";
+            vm.homesList = [];
             vm.factors = [];
             vm.factorSettings = {
                 object: true,
@@ -23,47 +23,47 @@ powerdialerApp.controller('VacationsPageController',
             vm.authenticated = !!authService.authenticated;
 
             function updateList() {
-                let vacationsPromise, factorsPromise;
+                let homesPromise, factorsPromise;
                 if (vm.authenticated) {
-                    vacationsPromise = HouseInventoryingService.getAllVacations();
+                    homesPromise = HouseInventoryingService.getAllHomes();
                 }
                 else {
                     try {
-                        vacationsPromise = $q.all(JSON.parse(localStorage.vacations).map((vacation) => {
-                            return HouseInventoryingService.convertVacationForUi(vacation);
+                        homesPromise = $q.all(JSON.parse(localStorage.homes).map((home) => {
+                            return HouseInventoryingService.convertHomeForUi(home);
                         }));
                     }
                     catch (e) {
-                        vacationsPromise = $q.resolve();
+                        homesPromise = $q.resolve();
                     }
                 }
-                vacationsPromise = vacationsPromise.then(function (vacations) {
-                    vm.vacationsList = vacations;
-                    return vacations;
+                homesPromise = homesPromise.then(function (homes) {
+                    vm.homesList = homes;
+                    return homes;
                 }).catch(function (error) {
-                    console.log("Getting Vacations Error: ", error);
+                    console.log("Getting Homes Error: ", error);
                     NotificationProvider.error({
-                        message: "Error Getting All Vacations"
+                        message: "Error Getting All Homes"
                     });
                 });
                 factorsPromise = HouseInventoryingService.getAllFactors().then(function (factors) {
                     vm.factors = factors;
                     return factors;
                 });
-                return $q.all([vacationsPromise, factorsPromise]);
+                return $q.all([homesPromise, factorsPromise]);
             }
 
             updateList();
 
-            function openEditModal(vacation) {
+            function openEditModal(home) {
                 let modalInstance = $uibModal.open({
-                    templateUrl: '/public/house-inventorying/views/edit_vacation_modal.html',
-                    controller: 'EditVacationModalController',
+                    templateUrl: '/public/house-inventorying/views/edit_home_modal.html',
+                    controller: 'EditHomeModalController',
                     controllerAs: 'vm',
                     size: "lg",
                     resolve: {
-                        vacation: function () {
-                            return vacation;
+                        home: function () {
+                            return home;
                         }
                     }
                 });
@@ -84,43 +84,43 @@ powerdialerApp.controller('VacationsPageController',
                 });
             }
 
-            vm.createVacation = () => {
+            vm.createHome = () => {
                 openEditModal({factors: []});
             };
 
-            vm.editVacation = (vacation) => {
-                openEditModal(vacation);
+            vm.editHome = (home) => {
+                openEditModal(home);
             };
 
-            vm.deleteVacation = (vacation) => {
+            vm.deleteHome = (home) => {
                 if (authService.authenticated) {
-                    return HouseInventoryingService.deleteVacation(vacation.id)
+                    return HouseInventoryingService.deleteHome(home.id)
                         .then(function () {
                             NotificationProvider.success({
-                                message: "Successfully removed " + vacation.name
+                                message: "Successfully removed " + home.name
                             });
                             updateList();
                         })
                         .catch(function (error) {
                             console.log("Delete Error: ", error);
                             NotificationProvider.error({
-                                title: "Error Deleting Vacation"
+                                title: "Error Deleting Home"
                             });
                         });
                 }
                 else {
-                    let vacations = [];
+                    let homes = [];
                     try {
-                        vacations = JSON.parse(localStorage.vacations);
+                        homes = JSON.parse(localStorage.homes);
                     } catch (e) {
                     }
-                    vacations.splice(vacation.id, 1);
-                    let vacationsLength = vacations.length;
-                    for (let i = 0; i < vacationsLength; i++) {
-                        let vacation = vacations[i];
-                        vacation.id = i;
+                    homes.splice(home.id, 1);
+                    let homesLength = homes.length;
+                    for (let i = 0; i < homesLength; i++) {
+                        let home = homes[i];
+                        home.id = i;
                     }
-                    localStorage.vacations = JSON.stringify(vacations);
+                    localStorage.homes = JSON.stringify(homes);
                     updateList();
                 }
             };

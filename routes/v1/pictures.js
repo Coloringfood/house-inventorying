@@ -1,8 +1,10 @@
 let express = require('express'),
     router = express.Router(),
+    path = require('path');
     debug = require('debug')('house-inventorying:routes:v1:locations'),
     pictureService = require('./../../services/pictures');
 
+var app = express();
 /**
  * THIS IS JUST THEORY CODE.... TO BE TESTED AND ACTUALLY MADE
  */
