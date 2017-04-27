@@ -60,51 +60,51 @@ router.route('/')
         }
     });
 
-router.route('/categories')
-    .get((req, res, next) => {
-        debug("get item categories");
-        CategoryService.getAllCategories()
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    });
-
-router.route('/:itemId')
-    .get((req, res, next) => {
-        debug("get item id:%o", req.params.itemId);
-        ItemsService.getItem(req.params.itemId, req.user.userId)
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    })
-    .put((req, res, next) => {
-        debug("Put on id:%o, object: %o", req.params.itemId, req.body);
-        if (req.validateItem()) {
-            let body = req.body;
-            ItemsService.updateItem(req.params.itemId, body, req.user.userId)
-                .then((result) => {
-                    res.json(result);
-                })
-                .catch((e) => {
-                    next(e);
-                });
-        }
-    })
-    .delete((req, res, next) => {
-        debug("Deleting item: %o", req.params.itemId);
-        ItemsService.deleteItem(req.params.itemId, req.user.userId)
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    });
+// router.route('/categories')
+//     .get((req, res, next) => {
+//         debug("get item categories");
+//         CategoryService.getAllCategories()
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     });
+//
+// router.route('/:itemId')
+//     .get((req, res, next) => {
+//         debug("get item id:%o", req.params.itemId);
+//         ItemsService.getItem(req.params.itemId, req.user.userId)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     })
+//     .put((req, res, next) => {
+//         debug("Put on id:%o, object: %o", req.params.itemId, req.body);
+//         if (req.validateItem()) {
+//             let body = req.body;
+//             ItemsService.updateItem(req.params.itemId, body, req.user.userId)
+//                 .then((result) => {
+//                     res.json(result);
+//                 })
+//                 .catch((e) => {
+//                     next(e);
+//                 });
+//         }
+//     })
+//     .delete((req, res, next) => {
+//         debug("Deleting item: %o", req.params.itemId);
+//         ItemsService.deleteItem(req.params.itemId, req.user.userId)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     });
 
 module.exports = router;

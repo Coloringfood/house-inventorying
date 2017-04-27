@@ -1,7 +1,7 @@
 let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:houses'),
-    RoomsRoutes = require('./v1/roomsRoutes'),
+    RoomsRoutes = require('./roomsRoutes'),
     HousesService = require('./../../services/houses');
 
 router.use((req, res, next) => {
@@ -60,47 +60,57 @@ router.route('/')
     });
 
 router.use('/:house_id', (req, res, next) => {
-    // Validate user has access to room
-    HousesService.userHasAccess(req.params.house_id, req.user.userId);
+    debug("Checking permissions to room");
+    let err = null;
+    // Validate user has access to house
+    if (!HousesService.userHasAccess(req.params.house_id, req.user.userId)) {
+        err = {
+            status: 401,
+            showMessage: "UnauthorizedError",
+            errors: "Unauthorized access to house: " + req.params.house_id
+        };
+        debug("Unauthorized");
+    }
 
-
-    router.use('/rooms', RoomsRoutes);
-    
-    router.route('/')
-        .get((req, res, next) => {
-            debug("get house id:%o", req.params.house_id);
-            HousesService.getHouse(req.params.house_id, req.user.userId)
-                .then((result) => {
-                    res.json(result);
-                })
-                .catch((e) => {
-                    next(e);
-                });
-        })
-        .put((req, res, next) => {
-            debug("Put on id:%o, object: %o", req.params.house_id, req.body);
-            if (req.validateHouse()) {
-                let body = req.body;
-                HousesService.updateHouse(req.params.house_id, body, req.user.userId)
-                    .then((result) => {
-                        res.json(result);
-                    })
-                    .catch((e) => {
-                        next(e);
-                    });
-            }
-        })
-        .delete((req, res, next) => {
-            debug("Deleting house: %o", req.params.house_id);
-            HousesService.deleteHouse(req.params.house_id)
-                .then((result) => {
-                    res.json(result);
-                })
-                .catch((e) => {
-                    next(e);
-                });
-        });
-
+    next(err);
 });
+
+// router.route('/:house_id')
+//     .get((req, res, next) => {
+//         debug("get house id:%o", req.params.house_id);
+//         HousesService.getHouse(req.params.house_id, req.user.userId)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     })
+//     .put((req, res, next) => {
+//         debug("Put on id:%o, object: %o", req.params.house_id, req.body);
+//         if (req.validateHouse()) {
+//             let body = req.body;
+//             HousesService.updateHouse(req.params.house_id, body, req.user.userId)
+//                 .then((result) => {
+//                     res.json(result);
+//                 })
+//                 .catch((e) => {
+//                     next(e);
+//                 });
+//         }
+//     })
+//     .delete((req, res, next) => {
+//         debug("Deleting house: %o", req.params.house_id);
+//         HousesService.deleteHouse(req.params.house_id)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     });
+
+
+router.use('/:house_id/rooms', RoomsRoutes);
 
 module.exports = router;

@@ -5,7 +5,7 @@ let express = require('express'),
     HomesRoutes = require('./v1/housesRoutes'),
     ItemsRoutes = require('./v1/itemsRoutes'),
     AuthenticationRoutes = require('./v1/authenticationRoutes'),
-    PictureRoutes = require('./v1/pictures'),
+    PictureRoutes = require('./v1/picturesRoutes'),
     config = require('./../config/config.json'),
     expressJWT = require('express-jwt');
 

@@ -24,5 +24,5 @@ var categories = db.connection.define('categories', categorySchema, {
     paranoid: false,
     underscored: true
 });
-
+db.connection.sync();
 module.exports = categories;

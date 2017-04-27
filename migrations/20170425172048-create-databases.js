@@ -35,7 +35,6 @@ module.exports = {
               \`id\` int(10) unsigned NOT NULL AUTO_INCREMENT,
               \`name\` varchar(30) NOT NULL COMMENT 'How the user wishes to identify the house',
               \`description\` varchar(300) DEFAULT NULL COMMENT 'Information that will help the user',
-              \`house_id\` int(10) unsigned DEFAULT '0',
               \`created_at\` datetime NOT NULL,
               \`updated_at\` datetime NOT NULL,
               \`deleted_at\` datetime DEFAULT NULL,

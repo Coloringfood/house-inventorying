@@ -1,12 +1,12 @@
 let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:rooms'),
-    LocationsRoutes = require('./v1/locationsRoutes'),
+    LocationsRoutes = require('./locationsRoutes'),
     RoomsService = require('./../../services/rooms');
 
-router.use('/locations', LocationsRoutes);
-
 router.use((req, res, next) => {
+    console.log("Got rooms");
+
     req.validateRoom = () => {
         debug('validateRoom');
         validateRoomData();
@@ -62,51 +62,58 @@ router.route('/')
         }
     });
 
-router.route('/categories')
-    .get((req, res, next) => {
-        debug("get room categories");
-        CategoryService.getAllCategories()
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    });
+router.route('/:room_id', (req, res, next) => {
+    debug("Checking permissions to room");
+    let err = null;
+    // Validate user has access to room
+    if (!RoomsService.userHasAccess(req.params.room_id, req.user.userId)) {
+        err = {
+            status: 401,
+            showMessage: "UnauthorizedError",
+            errors: "Unauthorized access to house: " + req.params.house_id
+        };
+        debug("Unauthorized");
+    }
 
-router.route('/:roomId')
-    .get((req, res, next) => {
-        debug("get room id:%o", req.params.roomId);
-        RoomsService.getRoom(req.params.roomId, req.user.userId)
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    })
-    .put((req, res, next) => {
-        debug("Put on id:%o, object: %o", req.params.roomId, req.body);
-        if (req.validateRoom()) {
-            let body = req.body;
-            RoomsService.updateRoom(req.params.roomId, body, req.user.userId)
-                .then((result) => {
-                    res.json(result);
-                })
-                .catch((e) => {
-                    next(e);
-                });
-        }
-    })
-    .delete((req, res, next) => {
-        debug("Deleting room: %o", req.params.roomId);
-        RoomsService.deleteRoom(req.params.roomId, req.user.userId)
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    });
+    next(err);
+});
+
+// room_router.route('/:room_id')
+//     .get((req, res, next) => {
+//         debug("get room id:%o", req.params.roomId);
+//         RoomsService.getRoom(req.params.roomId, req.user.userId)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     })
+//     .put((req, res, next) => {
+//         debug("Put on id:%o, object: %o", req.params.roomId, req.body);
+//         if (req.validateRoom()) {
+//             let body = req.body;
+//             RoomsService.updateRoom(req.params.roomId, body, req.user.userId)
+//                 .then((result) => {
+//                     res.json(result);
+//                 })
+//                 .catch((e) => {
+//                     next(e);
+//                 });
+//         }
+//     })
+//     .delete((req, res, next) => {
+//         debug("Deleting room: %o", req.params.roomId);
+//         RoomsService.deleteRoom(req.params.roomId, req.user.userId)
+//             .then((result) => {
+//                 res.json(result);
+//             })
+//             .catch((e) => {
+//                 next(e);
+//             });
+//     });
+
+
+router.use('/:room_id/locations', LocationsRoutes);
 
 module.exports = router;

@@ -14,7 +14,6 @@ router.use((req, res, next) => {
                     for (let i = 0; i < featuresLength; i++) {
                         validateLocationData('[' + i + '].');
                     }
-
                 }
             }
             else {
@@ -42,18 +41,6 @@ router.use((req, res, next) => {
         return next();
     }
 );
-router.route('/list')
-    .get((req, res, next) => {
-        debug("Get Locations");
-        LocationsService.getAllLocations()
-            .then((result) => {
-                debug("Get Result: %o", result);
-                res.json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
-    });
 
 router.route('/')
     .post((req, res, next) => {

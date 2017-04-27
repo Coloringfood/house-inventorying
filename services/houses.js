@@ -1,5 +1,3 @@
-
-
 let Houses = module.exports = {};
 let Promise = require('bluebird'),
     debug = require('debug')('house-inventorying:services:houses'),
@@ -52,7 +50,7 @@ Houses.userHasAccess = (house_id, user_id) => {
             showMessage: error.showMessage || "Error trying to find room id: " + house_id,
             status: error.status || 500
         });
-    }).then(function (result){
+    }).then(function (result) {
         debug(result);
         return !!result.DataValues;
     })
