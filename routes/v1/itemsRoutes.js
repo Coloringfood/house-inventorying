@@ -24,7 +24,6 @@ router.use((req, res, next) => {
         req.assert('personal', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
         req.assert('required', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
         req.assert('always_needed', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('factors', 'Factors must be an array').optional({checkFalsy: true}).isArray();
     }
 
     function validateFactorData(base_location) {

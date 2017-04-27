@@ -15,10 +15,6 @@ var houseSchema = {
     description: {
         type: db.STRING(300),
         default: ""
-    },
-    house_id: {
-        type: db.INTEGER.UNSIGNED,
-        defaultValue: 0
     }
 };
 

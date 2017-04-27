@@ -2,9 +2,8 @@ let express = require('express'),
     expressValidator = require('express-validator'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1'),
-    HomesRoutes = require('./v1/homesRoutes'),
+    HomesRoutes = require('./v1/housesRoutes'),
     ItemsRoutes = require('./v1/itemsRoutes'),
-    LocationsRoutes = require('./v1/locationsRoutes'),
     AuthenticationRoutes = require('./v1/authenticationRoutes'),
     PictureRoutes = require('./v1/pictures'),
     config = require('./../config/config.json'),
@@ -130,8 +129,6 @@ router.use((req, res, next) => {
 router.use('/homes', HomesRoutes);
 
 router.use('/items', ItemsRoutes);
-
-router.use('/locations', LocationsRoutes);
 
 router.use('/authentication', AuthenticationRoutes);
 

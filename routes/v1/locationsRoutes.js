@@ -30,9 +30,12 @@ router.use((req, res, next) => {
 
         function validateLocationData(base_location) {
             debug('validatingCategoryData for %o', base_location);
-            req.assert(base_location + 'name', 'Name is required for locations').isString();
-            req.assert(base_location + 'type', 'Type must be one of: "Vacation Type", "Activities", "Other"').isInList(['Vacation Type', 'Activities', 'Other']);
-            req.assert(base_location + 'room_id', 'Room is required for all locations').isInt();
+            req.assert('name', 'This field should be a string').isString();
+            req.assert('name', 'This field should be 30 characters or less').len(0, 30);
+            req.assert('description', 'This field should be a string').optional({checkFalsy: true}).isString();
+            req.assert('description', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 300);
+            req.assert('picture_location', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 100);
+            req.assert('room_id', 'This optional field should be a Boolean').isInteger();
         }
 
 
@@ -40,17 +43,17 @@ router.use((req, res, next) => {
     }
 );
 router.route('/list')
-	.get((req, res, next) => {
-		debug("Get Locations");
-		LocationsService.getAllLocations()
-			.then((result) => {
-				debug("Get Result: %o", result);
-				res.json(result);
-			})
-			.catch((e) => {
-				next(e);
-			});
-	});
+    .get((req, res, next) => {
+        debug("Get Locations");
+        LocationsService.getAllLocations()
+            .then((result) => {
+                debug("Get Result: %o", result);
+                res.json(result);
+            })
+            .catch((e) => {
+                next(e);
+            });
+    });
 
 router.route('/')
     .post((req, res, next) => {

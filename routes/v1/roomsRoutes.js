@@ -1,13 +1,15 @@
 let express = require('express'),
     router = express.Router(),
-    debug = require('debug')('house-inventorying:routes:v1:items'),
-    ItemsService = require('./../../services/items'),
-    CategoryService = require('./../../services/categories');
+    debug = require('debug')('house-inventorying:routes:v1:rooms'),
+    LocationsRoutes = require('./v1/locationsRoutes'),
+    RoomsService = require('./../../services/rooms');
+
+router.use('/locations', LocationsRoutes);
 
 router.use((req, res, next) => {
-    req.validateItem = () => {
-        debug('validateItem');
-        validateItemData();
+    req.validateRoom = () => {
+        debug('validateRoom');
+        validateRoomData();
         if (typeof req.body.factors === 'object' && Array.isArray(req.body.factors)) {
             let features_length = req.body.factors.length;
             for (let i = 0; i < features_length; i++) {
@@ -18,13 +20,12 @@ router.use((req, res, next) => {
         return req.checkErrors();
     };
 
-    function validateItemData() {
+    function validateRoomData() {
         req.assert('name', 'This field should be a string').isString();
         req.assert('name', 'This field should be 30 characters or less').len(0, 30);
-        req.assert('personal', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('required', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('always_needed', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('factors', 'Factors must be an array').optional({checkFalsy: true}).isArray();
+        req.assert('description', 'This field should be a string').optional({checkFalsy: true}).isString();
+        req.assert('description', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 300);
+        req.assert('house_id', 'This optional field should be a Boolean').isInteger();
     }
 
     function validateFactorData(base_location) {
@@ -36,8 +37,8 @@ router.use((req, res, next) => {
 });
 router.route('/')
     .get((req, res, next) => {
-        debug('GET /item');
-        ItemsService.getAllItems(req.user.userId)
+        debug('GET /room');
+        RoomsService.getAllRooms(req.user.userId)
             .then((results) => {
                 res.json(results);
             })
@@ -47,10 +48,10 @@ router.route('/')
     })
     .post((req, res, next) => {
         debug("Post: %o", req.body);
-        if (req.validateItem()) {
+        if (req.validateRoom()) {
             let body = req.body;
             body.created_by_id = req.user.userId;
-            return ItemsService.addItem(body)
+            return RoomsService.addRoom(body)
                 .then((result) => {
                     debug("post result: %o", result);
                     res.status(201).send();
@@ -63,7 +64,7 @@ router.route('/')
 
 router.route('/categories')
     .get((req, res, next) => {
-        debug("get item categories");
+        debug("get room categories");
         CategoryService.getAllCategories()
             .then((result) => {
                 res.json(result);
@@ -73,10 +74,10 @@ router.route('/categories')
             });
     });
 
-router.route('/:itemId')
+router.route('/:roomId')
     .get((req, res, next) => {
-        debug("get item id:%o", req.params.itemId);
-        ItemsService.getItem(req.params.itemId, req.user.userId)
+        debug("get room id:%o", req.params.roomId);
+        RoomsService.getRoom(req.params.roomId, req.user.userId)
             .then((result) => {
                 res.json(result);
             })
@@ -85,10 +86,10 @@ router.route('/:itemId')
             });
     })
     .put((req, res, next) => {
-        debug("Put on id:%o, object: %o", req.params.itemId, req.body);
-        if (req.validateItem()) {
+        debug("Put on id:%o, object: %o", req.params.roomId, req.body);
+        if (req.validateRoom()) {
             let body = req.body;
-            ItemsService.updateItem(req.params.itemId, body, req.user.userId)
+            RoomsService.updateRoom(req.params.roomId, body, req.user.userId)
                 .then((result) => {
                     res.json(result);
                 })
@@ -98,8 +99,8 @@ router.route('/:itemId')
         }
     })
     .delete((req, res, next) => {
-        debug("Deleting item: %o", req.params.itemId);
-        ItemsService.deleteItem(req.params.itemId, req.user.userId)
+        debug("Deleting room: %o", req.params.roomId);
+        RoomsService.deleteRoom(req.params.roomId, req.user.userId)
             .then((result) => {
                 res.json(result);
             })
