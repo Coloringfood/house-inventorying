@@ -24,5 +24,7 @@ var categories = db.connection.define('categories', categorySchema, {
     paranoid: false,
     underscored: true
 });
+// TODO: Remove Sync When Making Migration
 db.connection.sync();
+
 module.exports = categories;
