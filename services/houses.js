@@ -228,30 +228,21 @@ Houses.updateHouse = (id, house, user_id) => {
     });
 };
 
-// Houses.deleteHouse = (id, userId) => {
-//     debug("deleteHouse");
-//     return HousesTable.destroy({
-//         where: {
-//             id: id,
-//             $or: [
-//                 {
-//                     personal: 0
-//                 },
-//                 {
-//                     personal: 1,
-//                     created_by_id: userId
-//                 }
-//             ]
-//         }
-//     }).then(function (destroyResults) {
-//         if (destroyResults === 0) {
-//             return Promise.reject({
-//                 errors: HOUSE_NOT_FOUND,
-//                 location: "Houses.deleteHouse",
-//                 showMessage: "House ID: " + id + " not found",
-//                 status: 404
-//             });
-//         }
-//         return destroyResults;
-//     });
-// };
+Houses.deleteHouse = (id) => {
+    debug("deleteHouse");
+    return HousesTable.destroy({
+        where: {
+            id: id
+        }
+    }).then(function (destroyResults) {
+        if (destroyResults === 0) {
+            return Promise.reject({
+                errors: HOUSE_NOT_FOUND,
+                location: "Houses.deleteHouse",
+                showMessage: "House ID: " + id + " not found",
+                status: 404
+            });
+        }
+        return destroyResults;
+    });
+};

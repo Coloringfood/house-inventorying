@@ -128,16 +128,16 @@ router.route('/:house_id')
                         next(e);
                     });
             }
-        // })
-        // .delete((req, res, next) => {
-        //     debug("Deleting house: %o", req.params.house_id);
-        //     HousesService.deleteHouse(req.params.house_id)
-        //         .then((result) => {
-        //             res.json(result);
-        //         })
-        //         .catch((e) => {
-        //             next(e);
-        //         });
+        })
+    .delete((req, res, next) => {
+        debug("Deleting house: %o", req.params.house_id);
+        HousesService.deleteHouse(req.params.house_id)
+            .then((result) => {
+                res.json(result);
+            })
+            .catch((e) => {
+                next(e);
+                });
     });
 
 
