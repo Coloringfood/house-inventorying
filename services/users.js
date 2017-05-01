@@ -14,7 +14,7 @@ Users.authenticate = (username, password) => {
             password: password
         }
     })
-        .then(function (all_items_result) {
+        .then((all_items_result) => {
             if (all_items_result) {
                 return generateToken(all_items_result);
             }
@@ -30,7 +30,7 @@ Users.authenticate = (username, password) => {
 Users.createUser = (new_user) => {
     debug("Create User");
     return UsersTable.create(new_user)
-        .catch(function (error) {
+        .catch((error) => {
             debug("sequelize error: %o", error);
             return Promise.reject({
                 errors: error,
@@ -40,7 +40,7 @@ Users.createUser = (new_user) => {
                 status: error.status || 400
             });
         })
-        .then(function (create_result) {
+        .then((create_result) => {
             debug("create_result.dataValues: %o", create_result.dataValues);
             return Promise.resolve(Users.authenticate(new_user.username, new_user.password));
         });
@@ -56,13 +56,10 @@ Users.updateUser = (user_data) => {
             id: user_data.id
         }
     }).then((result) => {
-        debug("updating User's age");
-
         return UsersTable.find({
             where: {
                 id: user_data.id
-            },
-            include: USERS_INCLUDE
+            }
         }).then((result) => {
             return generateToken(result.dataValues);
         });

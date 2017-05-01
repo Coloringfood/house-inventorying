@@ -35,14 +35,19 @@ sequelize db:migrate
 <dl>
   <dt>/v1/houses</dt>
   <dd>
-    <li>Get</li>
-    <li>Post</li>
+    <li>Get: Get all houses user has access to</li>
+    <li>Post: Create a new house</li>
   </dd>
   <dt>/v1/houses/:house_id</dt>
   <dd>
-    <li>Get</li>
-    <li>Patch</li>
-    <li>Delete</li>
+    <li>Get: Get basic house data</li>
+    <li>Patch: Update basic house data</li>
+    <li>Delete: Soft delete the house</li>
+  </dd>
+  <dt>/v1/houses/:house_id/users</dt>
+  <dd>
+    <li>Post: Add User to access ho use</li>
+    <li>Delete: Remove User's access to ho use</li>
   </dd>
 </dl>
 
@@ -51,14 +56,14 @@ sequelize db:migrate
 <dl>
   <dt>/v1/houses/:house_id/room</dt>
   <dd>
-    <li>Get</li>
-    <li>Post</li>
+    <li>Get: Get all rooms attached to the house</li>
+    <li>Post: Create a new room in the house</li>
   </dd>
   <dt>/v1/houses/:house_id/room/:room_id</dt>
   <dd>
-    <li>Get</li>
-    <li>Patch</li>
-    <li>Delete</li>
+    <li>Get: Get basic room data</li>
+    <li>Patch: Update basic room data</li>
+    <li>Delete: Soft delete the room</li>
   </dd>
 </dl>
 

@@ -57,7 +57,7 @@ app.use(function (err, req, res, next) {
     if (typeof err.showMessage === 'undefined') {
         err.showMessage = (typeof err.defaultMessage === 'undefined') ? unspecifiedErrorMessage : err.defaultMessage;
     } else if (err.name == 'UnauthorizedError') {
-        err.showMessage = err.name;
+        err.showMessage = err.message;
     }
     var response = {
         error: err.errors || true,

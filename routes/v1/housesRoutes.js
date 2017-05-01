@@ -45,6 +45,7 @@ router.route('/')
     })
     .post((req, res, next) => {
         debug("Post: %o", req.body);
+        debug("user: " + req.user.userId);
         if (req.validateHouse()) {
             return HousesService.addHouse(req.body, req.user.userId)
                 .then((result) => {
@@ -58,11 +59,11 @@ router.route('/')
     });
 
 router.use('/:house_id', (req, res, next) => {
-    debug("Checking permissions to room");
+    debug("Checking permissions to house");
     return HousesService.userHasAccess(req.params.house_id, req.user.userId).then(
         (has_access) => {
             let err = null;
-            debug("user has access: " + has_access);
+            debug("User has house access: " + has_access);
             // Validate user has access to house
             if (!has_access) {
                 err = {
@@ -70,9 +71,9 @@ router.use('/:house_id', (req, res, next) => {
                     showMessage: "UnauthorizedError",
                     errors: "Unauthorized access to house: " + req.params.house_id
                 };
-                debug("Unauthorized");
+            } else {
+                req.house_id = req.params.house_id
             }
-            console.log("err: ", err);
 
             next(err);
         })
@@ -84,6 +85,7 @@ router.use('/:house_id', (req, res, next) => {
 router.route("/:house_id/users")
     .post((req, res, next) => {
         debug("adding user IDs: " + req.body + " to house id: " + req.params.house_id);
+        debug("user: " + req.user.userId);
         return HousesService.addUsersToHouse(req.body, req.params.house_id)
             .then((result) => {
                 res.status(204).json(result);
@@ -94,6 +96,7 @@ router.route("/:house_id/users")
     })
     .delete((req, res, next) => {
         debug("removing user IDs: " + req.body + " from house id: " + req.params.house_id);
+        debug("user: " + req.user.userId);
         return HousesService.removeUsersFromHouse(req.body, req.params.house_id)
             .then((result) => {
                 res.status(204).json(result);
@@ -115,29 +118,31 @@ router.route('/:house_id')
             .catch((e) => {
                 next(e);
             });
-        })
-        .put((req, res, next) => {
-            debug("Put on id:%o, object: %o", req.params.house_id, req.body);
-            if (req.validateHouse()) {
-                let body = req.body;
-                HousesService.updateHouse(req.params.house_id, body)
-                    .then((result) => {
-                        res.status(204).send();
-                    })
-                    .catch((e) => {
-                        next(e);
-                    });
-            }
-        })
+    })
+    .put((req, res, next) => {
+        debug("Put on id:%o, object: %o", req.params.house_id, req.body);
+        debug("user: " + req.user.userId);
+        if (req.validateHouse()) {
+            let body = req.body;
+            HousesService.updateHouse(req.params.house_id, body)
+                .then((result) => {
+                    res.status(204).send();
+                })
+                .catch((e) => {
+                    next(e);
+                });
+        }
+    })
     .delete((req, res, next) => {
         debug("Deleting house: %o", req.params.house_id);
+        debug("user: " + req.user.userId);
         HousesService.deleteHouse(req.params.house_id)
             .then((result) => {
                 res.json(result);
             })
             .catch((e) => {
                 next(e);
-                });
+            });
     });
 
 

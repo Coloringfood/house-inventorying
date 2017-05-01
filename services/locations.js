@@ -17,7 +17,7 @@ Locations.getAllLocations = () => {
             ["name", "ASC"]
         ]
     })
-        .then(function (all_items_result) {
+        .then((all_items_result) => {
             return all_items_result;
         });
 };
@@ -27,7 +27,7 @@ Locations.getAllLocations = () => {
 //     return Promise.map(new_locations, (location) => {
 //         location.created_by = created_by;
 //         return LocationsTable.create(location);
-//     }).then(function (createResult) {
+//     }).then((createResult) => {
 //         return createResult;
 //     });
 // };

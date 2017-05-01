@@ -26,7 +26,7 @@ function convertHouseForUI(house) {
 }
 
 Houses.userHasAccess = (house_id, user_id) => {
-    debug("check user Access for pictures in room");
+    debug("check user Access for to house");
     return HousesTable.find({
         where: {
             id: house_id
@@ -37,7 +37,7 @@ Houses.userHasAccess = (house_id, user_id) => {
                 id: user_id
             }
         }]
-    }).catch(function (error) {
+    }).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -45,7 +45,7 @@ Houses.userHasAccess = (house_id, user_id) => {
             showMessage: error.showMessage || "Error trying to find room id: " + house_id,
             status: error.status || 500
         });
-    }).then(function (result) {
+    }).then((result) => {
         return !!result;
     })
 };
@@ -65,7 +65,7 @@ Houses.getAllHouses = (userId) => {
             ],
             attributes: HOUSE_ATTRIBUTES
         }
-    ).catch(function (error) {
+    ).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -73,9 +73,9 @@ Houses.getAllHouses = (userId) => {
             showMessage: error.showMessage || "Error trying to find all houses",
             status: error.status || 500
         });
-    }).then(function (allHousesResult) {
+    }).then((allHousesResult) => {
         return Promise.map(allHousesResult, convertHouseForUI)
-            .then(function (results) {
+            .then((results) => {
                 return results;
             });
     });
@@ -88,7 +88,7 @@ Houses.getHouse = (id) => {
             id: id
         },
         attributes: HOUSE_ATTRIBUTES
-    }).catch(function (error) {
+    }).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -96,7 +96,7 @@ Houses.getHouse = (id) => {
             showMessage: error.showMessage || "Error trying to find house id: " + id,
             status: error.status || 500
         });
-    }).then(function (findResult) {
+    }).then((findResult) => {
         if (findResult === null) {
             return Promise.reject({
                 errors: HOUSE_NOT_FOUND,
@@ -112,7 +112,7 @@ Houses.getHouse = (id) => {
 Houses.addHouse = (house, user_id) => {
     debug("addHouse");
     return HousesTable.create(house)
-        .catch(function (error) {
+        .catch((error) => {
             return Promise.reject({
                 error: error,
                 message: "sequelize_error",
@@ -122,7 +122,7 @@ Houses.addHouse = (house, user_id) => {
             });
         }).then((create_result) => {
             return Houses.addUserToHouse(user_id, create_result)
-                .then(function () {
+                .then(() => {
                     return create_result;
                 });
         });
@@ -140,7 +140,7 @@ Houses.addUsersToHouse = (users, house_id) => {
 
 Houses.addUserToHouse = (user_id, house) => {
     return UsersTable.findById(user_id)
-        .then(function (userResult) {
+        .then((userResult) => {
             if (!userResult) {
                 return Promise.reject({
                     message: "user_not_found",
@@ -175,7 +175,7 @@ Houses.removeUsersFromHouse = (users, house_id) => {
 
 Houses.removeUserFromHouse = (user_id, house) => {
     return UsersTable.findById(user_id)
-        .then(function (userResult) {
+        .then((userResult) => {
             if (!userResult) {
                 return Promise.reject({
                     message: "user_not_found",
@@ -198,13 +198,13 @@ Houses.removeUserFromHouse = (user_id, house) => {
         })
 };
 
-Houses.updateHouse = (id, house, user_id) => {
+Houses.updateHouse = (id, house) => {
     debug("updateHouse");
     return HousesTable.update(house, {
         where: {
             id: id
         }
-    }).catch(function (error) {
+    }).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -212,7 +212,7 @@ Houses.updateHouse = (id, house, user_id) => {
             showMessage: error.showMessage || "Error trying to update house: " + id,
             status: error.status || 500
         });
-    }).then(function (updateResult) {
+    }).then((updateResult) => {
         if (updateResult[0] === 0) {
             return Promise.reject({
                 errors: HOUSE_NOT_FOUND,
@@ -221,10 +221,7 @@ Houses.updateHouse = (id, house, user_id) => {
                 status: 404
             });
         }
-        return Promise.map(updateResult, convertHouseForUI)
-            .then(function (results) {
-                return results;
-            });
+        return house;
     });
 };
 
@@ -234,7 +231,7 @@ Houses.deleteHouse = (id) => {
         where: {
             id: id
         }
-    }).then(function (destroyResults) {
+    }).then((destroyResults) => {
         if (destroyResults === 0) {
             return Promise.reject({
                 errors: HOUSE_NOT_FOUND,

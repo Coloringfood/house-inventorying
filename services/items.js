@@ -63,7 +63,7 @@ Items.getAllItems = (userId) => {
             attributes: ITEM_ATTRIBUTES,
             include: ITEM_INCLUDE
         }
-    ).catch(function (error) {
+    ).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -71,9 +71,9 @@ Items.getAllItems = (userId) => {
             showMessage: error.showMessage || "Error trying to find all items",
             status: error.status || 500
         });
-    }).then(function (allItemsResult) {
+    }).then((allItemsResult) => {
         return Promise.map(allItemsResult, convertItemForUI)
-            .then(function (results) {
+            .then((results) => {
                 return results;
             });
     });
@@ -96,7 +96,7 @@ Items.getItem = (id, userId) => {
             ]
         },
         include: ITEM_INCLUDE
-    }).catch(function (error) {
+    }).catch((error) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
@@ -104,7 +104,7 @@ Items.getItem = (id, userId) => {
             showMessage: error.showMessage || "Error trying to find item id: " + id,
             status: error.status || 500
         });
-    }).then(function (findResult) {
+    }).then((findResult) => {
         if (findResult === null) {
             return Promise.reject({
                 errors: ITEM_NOT_FOUND,
@@ -121,7 +121,7 @@ Items.getItem = (id, userId) => {
 //     debug("addItem");
 //     item.category_id = item.category_id || item.category.id || 4;
 //     return ItemsTable.create(item)
-//         .catch(function (error) {
+//         .catch((error) => {
 //             return Promise.reject({
 //                 error: error,
 //                 message: "sequelize_error",
@@ -130,12 +130,12 @@ Items.getItem = (id, userId) => {
 //                 status: error.status || 500
 //             });
 //         })
-//         .then(function (createResult) {
+//         .then((createResult) => {
 //             let locationsPromise = Promise.map(item.locations, (location) => {
 //                 return addLocationToItem(createResult, location);
 //             });
 //
-//             return Promise.all([locationsPromise]).then(function () {
+//             return Promise.all([locationsPromise]).then(() => {
 //                 return createResult;
 //             });
 //         });
@@ -167,7 +167,7 @@ Items.getItem = (id, userId) => {
 //                 }
 //             ]
 //         }
-//     }).catch(function (error) {
+//     }).catch((error) => {
 //         return Promise.reject({
 //             error: error,
 //             message: "sequelize_error",
@@ -175,7 +175,7 @@ Items.getItem = (id, userId) => {
 //             showMessage: error.showMessage || "Error trying to update item: " + id,
 //             status: error.status || 500
 //         });
-//     }).then(function (updateResult) {
+//     }).then((updateResult) => {
 //         if (updateResult[0] === 0) {
 //             return Promise.reject({
 //                 errors: ITEM_NOT_FOUND,
@@ -184,13 +184,13 @@ Items.getItem = (id, userId) => {
 //                 status: 404
 //             });
 //         }
-//         return Items.getItem(id, userId).then(function (itemResult) {
+//         return Items.getItem(id, userId).then((itemResult) => {
 //             let returnValue = itemResult.dataValues;
 //             let locationsPromise = updateItemLocations(itemResult, item.locations)
-//                 .then(function (newLocations) {
+//                 .then((newLocations) => {
 //                     returnValue.locations = newLocations;
 //                 });
-//             return Promise.all([locationsPromise]).then(function () {
+//             return Promise.all([locationsPromise]).then(() => {
 //                 return returnValue;
 //             });
 //         });
@@ -212,7 +212,7 @@ Items.getItem = (id, userId) => {
 //                 }
 //             ]
 //         }
-//     }).then(function (destroyResults) {
+//     }).then((destroyResults) => {
 //         if (destroyResults === 0) {
 //             return Promise.reject({
 //                 errors: ITEM_NOT_FOUND,
@@ -238,7 +238,7 @@ Items.getItem = (id, userId) => {
 //                 attributes: []
 //             }
 //         }]
-//     }).then(function (foundLocations) {
+//     }).then((foundLocations) => {
 //         return Promise.map(foundLocations, (location) => {
 //             let index = locations.indexOf(location.id);
 //             if (index === -1) {
@@ -250,14 +250,14 @@ Items.getItem = (id, userId) => {
 //                 return locations.splice(index, 1);
 //             }
 //         });
-//     }).then(function () {
+//     }).then(() => {
 //         return Promise.map(locations, (locationId)=> {
 //             return addLocationToItem(item, locationId)
 //                 .then((result) => {
 //                     updatedLocations.push(result);
 //                 });
 //         });
-//     }).then(function () {
+//     }).then(() => {
 //         return updatedLocations;
 //     });
 // }
