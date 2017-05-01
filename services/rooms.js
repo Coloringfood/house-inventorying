@@ -1,7 +1,6 @@
 let Rooms = module.exports = {};
 let Promise = require('bluebird'),
     debug = require('debug')('house-inventorying:services:rooms'),
-    HouseService = require('./houses'),
     HousesTable = require('./../models/houses'),
     RoomsTable = require('./../models/rooms');
 
@@ -127,7 +126,6 @@ Rooms.updateRoom = (id, room) => {
             status: error.status || 500
         });
     }).then((updateResult) => {
-        console.log("updateResult: ", updateResult);
         if (updateResult[0] === 0) {
             return Promise.reject({
                 errors: HOUSE_NOT_FOUND,
