@@ -5,6 +5,10 @@ let Promise = require('bluebird'),
     LocationsTable = require('./../models/locations'),
     CategoriesTable = require('./../models/categories');
 
+/**
+ * Items can be attached to a location or a room
+ */
+
 const ITEM_NOT_FOUND = "item_not_found";
 const ITEM_INCLUDE = [
     {

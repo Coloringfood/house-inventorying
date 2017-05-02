@@ -22,16 +22,12 @@ Locations.getAllLocations = () => {
         });
 };
 
-// Locations.addLocations = (new_locations, created_by) => {
-//     debug("addLocations: %o", new_locations);
-//     return Promise.map(new_locations, (location) => {
-//         location.created_by = created_by;
-//         return LocationsTable.create(location);
-//     }).then((createResult) => {
-//         return createResult;
-//     });
-// };
-//
-// function addLocationToRoom(location, room_id){
-//
-// }
+Locations.addLocations = (new_locations, room_id) => {
+    debug("addLocations: %o", new_locations);
+    return Promise.map(new_locations, (location) => {
+        location.room_id = room_id;
+        return LocationsTable.create(location);
+    }).then((createResult) => {
+        return createResult;
+    });
+};

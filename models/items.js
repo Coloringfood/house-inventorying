@@ -1,5 +1,6 @@
 var db = require('./database');
 var locations = require('./locations'),
+    rooms = require('./rooms'),
     categories = require('./categories');
 
 var itemSchema = {
@@ -29,7 +30,13 @@ var itemSchema = {
     },
     location_id: {
         type: db.INTEGER.UNSIGNED,
-        defaultValue: 4
+        defaultValue: 4,
+        required: false
+    },
+    room_id: {
+        type: db.INTEGER.UNSIGNED,
+        defaultValue: 4,
+        required: false
     },
     created_by_id: {
         type: db.INTEGER.UNSIGNED
@@ -57,5 +64,8 @@ categories.belongsToMany(items, {through: itemsCategories});
 
 items.belongsTo(locations, {foreignKey: 'location_id'});
 locations.hasMany(items, {foreignKey: 'location_id'});
+
+items.belongsTo(rooms, {foreignKey: 'room_id'});
+rooms.hasMany(items, {foreignKey: 'room_id'});
 
 module.exports = items;
