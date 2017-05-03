@@ -27,13 +27,12 @@ Rooms.getAllRooms = (house_id) => {
             order: [
                 ["name", "ASC"]
             ],
-            include: [
-                {
-                    model: HousesTable,
-                    where: {
-                        id: house_id
-                    }
-                }]
+            include: [{
+                model: HousesTable,
+                where: {
+                    id: house_id
+                }
+            }]
         })
         .catch((error) => {
             return Promise.reject({
@@ -65,7 +64,7 @@ Rooms.roomBelongsToHouse = (room_id, house_id) => {
         return Promise.reject({
             error: error,
             message: "sequelize_error",
-            location: "Pictures.hasAccess sequelize find",
+            location: "Rooms.roomBelongsToHouse sequelize find",
             showMessage: error.showMessage || "Error trying to find room id: " + room_id,
             status: error.status || 500
         });

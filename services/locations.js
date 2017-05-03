@@ -1,7 +1,8 @@
 let Locations = module.exports = {};
 let Promise = require('bluebird'),
     debug = require('debug')('house-inventorying:services:locations'),
-    LocationsTable = require('./../models/locations');
+    LocationsTable = require('./../models/locations'),
+    RoomsTable = require('./../models/rooms');
 
 const LOCATION_ATTRIBUTES = [
     "id",
@@ -9,16 +10,52 @@ const LOCATION_ATTRIBUTES = [
     "description",
     "picture_location"
 ];
-Locations.getAllLocations = () => {
-    debug("getAllLocations");
-    return LocationsTable.findAll({
-        attributes: LOCATION_ATTRIBUTES,
-        order: [
-            ["name", "ASC"]
-        ]
+const LOCATION_NOT_FOUND = "location_not_found";
+
+function convertLocationForUI(location) {
+    let locationData = location.dataValues;
+    if (locationData.room) {
+        delete locationData.room;
+    }
+    return locationData;
+}
+
+Locations.locationBelongsToRoom = (location_id, room_id) => {
+    debug("check user Access to location: " + location_id + " in room: " + room_id);
+    return LocationsTable.find({
+        where: {
+            id: location_id
+        },
+        include: [{
+            model: RoomsTable,
+            where: {
+                id: room_id
+            }
+        }]
+    }).catch((error) => {
+        return Promise.reject({
+            error: error,
+            message: "sequelize_error",
+            location: "Locations.locationBelongsToRoom sequelize find",
+            showMessage: error.showMessage || "Error trying to find location id: " + room_id,
+            status: error.status || 500
+        });
+    }).then((result) => {
+        return !!result;
     })
+};
+
+Locations.getAllLocations = (room_id) => {
+    debug("getAllLocations for room: (" + room_id + ")");
+    return LocationsTable.findAll(
+        {
+            attributes: LOCATION_ATTRIBUTES,
+            order: [
+                ["name", "ASC"]
+            ]
+        })
         .then((all_items_result) => {
-            return all_items_result;
+            return Promise.map(all_items_result, convertLocationForUI);
         });
 };
 
@@ -29,5 +66,67 @@ Locations.addLocations = (new_locations, room_id) => {
         return LocationsTable.create(location);
     }).then((createResult) => {
         return createResult;
+    });
+};
+
+Locations.getLocation = (location_id) => {
+    debug("getLocation");
+    return LocationsTable.find(
+        {
+            where: {id: location_id},
+            attributes: LOCATION_ATTRIBUTES,
+            order: [
+                ["name", "ASC"]
+            ]
+        }
+    )
+        .then((locationResult) => {
+            return convertLocationForUI(locationResult);
+        })
+};
+
+Locations.updateLocation = (id, location) => {
+    debug("updateLocation");
+    return LocationsTable.update(location, {
+        where: {
+            id: id
+        }
+    }).catch((error) => {
+        return Promise.reject({
+            error: error,
+            message: "sequelize_error",
+            location: "Locations.updateLocation sequelize update",
+            showMessage: error.showMessage || "Error trying to update location: " + id,
+            status: error.status || 500
+        });
+    }).then((updateResult) => {
+        if (updateResult[0] === 0) {
+            return Promise.reject({
+                errors: LOCATION_NOT_FOUND,
+                location: "Locations.updateLocation",
+                showMessage: "Location ID: " + id + " not found",
+                status: 404
+            });
+        }
+        return location;
+    });
+};
+
+Locations.deleteLocation = (id) => {
+    debug("deleteLocation");
+    return LocationsTable.destroy({
+        where: {
+            id: id
+        }
+    }).then((destroyResults) => {
+        if (destroyResults === 0) {
+            return Promise.reject({
+                errors: LOCATION_NOT_FOUND,
+                location: "Locations.deleteLocation",
+                showMessage: "Location ID: " + id + " not found",
+                status: 404
+            });
+        }
+        return destroyResults;
     });
 };

@@ -87,7 +87,7 @@ router.use("/:room_id/locations", LocationsRoutes);
 router.route('/:room_id')
     .get((req, res, next) => {
         debug("get room id:%o", req.params.room_id);
-        RoomsService.getRoom(req.params.room_id, req.user.userId)
+        RoomsService.getRoom(req.params.room_id)
             .then((result) => {
                 res.json(result);
             })
