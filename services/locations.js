@@ -62,10 +62,15 @@ Locations.getAllLocations = (room_id) => {
 Locations.addLocations = (new_locations, room_id) => {
     debug("addLocations: %o", new_locations);
     return Promise.map(new_locations, (location) => {
+        delete location.id;
         location.room_id = room_id;
-        return LocationsTable.create(location);
-    }).then((createResult) => {
-        return createResult;
+        return LocationsTable.create(location)
+            .then((create_result) => {
+                return {
+                    id: create_result.id,
+                    name: create_result.name
+                };
+            });
     });
 };
 

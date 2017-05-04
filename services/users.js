@@ -29,6 +29,7 @@ Users.authenticate = (username, password) => {
 
 Users.createUser = (new_user) => {
     debug("Create User");
+    delete new_user.id;
     return UsersTable.create(new_user)
         .catch((error) => {
             debug("sequelize error: %o", error);

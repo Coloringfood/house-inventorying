@@ -96,8 +96,8 @@ Houses.getHouse = (id) => {
             showMessage: error.showMessage || "Error trying to find house id: " + id,
             status: error.status || 500
         });
-    }).then((findResult) => {
-        if (findResult === null) {
+    }).then((find_result) => {
+        if (find_result === null) {
             return Promise.reject({
                 errors: HOUSE_NOT_FOUND,
                 location: "Houses.getHouse",
@@ -105,25 +105,26 @@ Houses.getHouse = (id) => {
                 status: 404
             });
         }
-        return findResult;
+        return find_result;
     });
 };
 
-Houses.addHouse = (house, user_id) => {
+Houses.addHouse = (new_house, user_id) => {
     debug("addHouse");
-    return HousesTable.create(house)
+    delete new_house.id;
+    return HousesTable.create(new_house)
         .catch((error) => {
             return Promise.reject({
                 error: error,
                 message: "sequelize_error",
                 location: "Houses.addHouse sequelize create",
-                showMessage: error.showMessage || "Error creating house",
+                showMessage: error.showMessage || "Error creating new_house",
                 status: error.status || 500
             });
         }).then((create_result) => {
             return Houses.addUserToHouse(user_id, create_result)
                 .then(() => {
-                    return create_result;
+                    return {id: create_result.id};
                 });
         });
 };

@@ -88,8 +88,8 @@ Rooms.getRoom = (id) => {
             showMessage: error.showMessage || "Error trying to find room id: " + id,
             status: error.status || 500
         });
-    }).then((findResult) => {
-        if (findResult === null) {
+    }).then((find_result) => {
+        if (find_result === null) {
             return Promise.reject({
                 errors: ROOM_NOT_FOUND,
                 location: "Rooms.getRoom",
@@ -97,12 +97,13 @@ Rooms.getRoom = (id) => {
                 status: 404
             });
         }
-        return findResult;
+        return find_result;
     });
 };
 
 Rooms.addRoom = (new_room, house_id) => {
     debug("Rooms.addRoom: %o", new_room);
+    delete new_room.id;
     new_room.house_id = house_id;
     return RoomsTable.create(new_room)
         .then((room_result) => {

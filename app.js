@@ -43,6 +43,7 @@ app.use('', default_route);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
+    err.showMessage = "Route Not found";
     err.status = 404;
     next(err);
 });
@@ -51,7 +52,6 @@ app.use(function (req, res, next) {
 
 app.use(function (err, req, res, next) {
     debug('next called: %o', err);
-    console.log(err);
     var status = (typeof err.status === 'undefined') ? 500 : err.status;
     var unspecifiedErrorMessage = "The server experienced an error, see logs";
     if (typeof err.showMessage === 'undefined') {
