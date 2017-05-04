@@ -1,7 +1,8 @@
 let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:locations'),
-    LocationsService = require('./../../services/locations');
+    LocationsService = require('./../../services/locations'),
+    ItemsService = require('./../../services/items');
 
 
 router.use((req, res, next) => {
@@ -27,20 +28,20 @@ router.use((req, res, next) => {
             return req.checkErrors();
         };
 
-    req.ValidateLocation = () => {
-        if (Array.isArray(req.body)) {
-            next({
-                message: 'Validation errors',
-                errors: [{param: "body", msg: "You must pass in an single object for the body"}],
-                status: 400
-            });
-        }
-        else {
-            validateLocationData('');
-        }
+        req.ValidateLocation = () => {
+            if (Array.isArray(req.body)) {
+                next({
+                    message: 'Validation errors',
+                    errors: [{param: "body", msg: "You must pass in an single object for the body"}],
+                    status: 400
+                });
+            }
+            else {
+                validateLocationData('');
+            }
 
-        return req.checkErrors();
-    }
+            return req.checkErrors();
+        }
 
         function validateLocationData(base_location) {
             debug('validatingCategoryData for %o', base_location);
@@ -72,7 +73,7 @@ router.route('/')
             return LocationsService.addLocations(req.body, req.room_id)
                 .then((result) => {
                     debug("post result: %o", result);
-                    res.status(201).send();
+                    res.status(201).send(result);
                 })
                 .catch((e) => {
                     next(e);
@@ -103,6 +104,34 @@ router.use('/:location_id', (req, res, next) => {
             next(e);
         });
 });
+
+router.route("/:location_id/items")
+    .get((req, res, next) => {
+        debug("getting all items in location: " + req.location_id);
+        return ItemsService.findItemsByLocation(req.location_id)
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((e) => {
+                next(e);
+            });
+    })
+    .post((req, res, next) => {
+        debug("Post: %o", req.body);
+        if (req.validateItem()) {
+            let body = req.body;
+            delete body.room_id
+            body.location_id = req.location_id;
+            return ItemsService.createItem(body, req.house_id)
+                .then((result) => {
+                    debug("post result: %o", result);
+                    res.status(201).send(result);
+                })
+                .catch((e) => {
+                    next(e);
+                });
+        }
+    });
 
 router.route('/:location_id')
     .get((req, res, next) => {

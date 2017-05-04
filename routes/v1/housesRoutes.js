@@ -2,6 +2,7 @@ let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:houses'),
     RoomsRoutes = require('./roomsRoutes'),
+    ItemsRoutes = require('./itemsRoutes'),
     HousesService = require('./../../services/houses');
 
 router.use((req, res, next) => {
@@ -25,13 +26,37 @@ router.use((req, res, next) => {
         req.assert('description', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 300);
     }
 
-    function validateFactorData(base_location) {
-        debug('validatingCategoryData for %o', base_location);
-        req.assert(base_location, 'This field (factor) should be a string').isInt();
+    req.validateItem = () => {
+        debug('validateItem');
+        validateItemData();
+
+        return req.checkErrors();
+    };
+
+    function validateItemData() {
+        req.assert('name', 'This field should be a string').isString();
+        req.assert('name', 'This field should be 30 characters or less').len(0, 30);
+        req.assert('personal', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert('required', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert('always_needed', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert('categories', 'This field should be an array of ints').isArray().isArrayInts();
     }
+
+    req.validateUsers = () => {
+        switch (typeof req.body.user_id) {
+            case "object":
+                req.assert('user_id', 'The body should be an array of ints').isArray().isArrayInts();
+                break;
+            default:
+                req.assert('user_id', 'This field should be an int').isInt();
+        }
+
+        return req.checkErrors();
+    };
 
     return next();
 });
+
 router.route('/')
     .get((req, res, next) => {
         debug('GET /house');
@@ -50,7 +75,7 @@ router.route('/')
             return HousesService.addHouse(req.body, req.user.userId)
                 .then((result) => {
                     debug("post result: %o", result);
-                    res.status(201).send();
+                    res.status(201).send(result);
                 })
                 .catch((e) => {
                     next(e);
@@ -86,13 +111,15 @@ router.route("/:house_id/users")
     .post((req, res, next) => {
         debug("adding user IDs: " + req.body + " to house id: " + req.params.house_id);
         debug("user: " + req.user.userId);
-        return HousesService.addUsersToHouse(req.body, req.params.house_id)
-            .then((result) => {
-                res.status(204).json(result);
-            })
-            .catch((e) => {
-                next(e);
-            });
+        if (req.validateUsers()) {
+            return HousesService.addUsersToHouse(req.body.user_id, req.params.house_id)
+                .then((result) => {
+                    res.status(201).send(result);
+                })
+                .catch((e) => {
+                    next(e);
+                });
+        }
     })
     .delete((req, res, next) => {
         debug("removing user IDs: " + req.body + " from house id: " + req.params.house_id);
@@ -107,6 +134,8 @@ router.route("/:house_id/users")
     });
 
 router.use('/:house_id/rooms', RoomsRoutes);
+
+router.use('/:house_id/items', ItemsRoutes);
 
 router.route('/:house_id')
     .get((req, res, next) => {

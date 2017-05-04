@@ -52,6 +52,7 @@ app.use(function (req, res, next) {
 
 app.use(function (err, req, res, next) {
     debug('next called: %o', err);
+    console.log("Catch all err: ", err);
     var status = (typeof err.status === 'undefined') ? 500 : err.status;
     var unspecifiedErrorMessage = "The server experienced an error, see logs";
     if (typeof err.showMessage === 'undefined') {

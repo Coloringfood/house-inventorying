@@ -6,8 +6,8 @@ let debug = require('debug')('house-inventorying:routes:v1:authentication'),
     path = require('path');
 
 router.use((req, res, next) => {
-        req.validateFactors = () => {
-            debug('validateFactors');
+        req.validateUser = () => {
+            debug('validateUser');
 
             validateUserData();
 
@@ -31,7 +31,7 @@ router.use((req, res, next) => {
 router.route('/create')
     .post((req, res, next) => {
         debug(req.body);
-        if (req.validateFactors()) {
+        if (req.validateUser()) {
             let body = req.body;
             return UserService.createUser(body)
                 .then((result) => {
@@ -65,7 +65,7 @@ router.route('/update')
 
 router.route('/themes')
     .get((req, res, next) => {
-        let location = path.join(__dirname, '..','..','public','assets','css','themes');
+        let location = path.join(__dirname, '..', '..', 'public', 'assets', 'css', 'themes');
         fs.readdir(location, (err, results) => {
             res.send(results);
         });

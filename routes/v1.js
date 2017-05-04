@@ -3,7 +3,7 @@ let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1'),
     HomesRoutes = require('./v1/housesRoutes'),
-    ItemsRoutes = require('./v1/itemsRoutes'),
+    // CategoriesRoutes = require('./v1/categoriesRoutes'),
     AuthenticationRoutes = require('./v1/authenticationRoutes'),
     PictureRoutes = require('./v1/picturesRoutes'),
     config = require('./../config/config.json'),
@@ -99,6 +99,21 @@ router.use(expressValidator({
                 isValid = false;
             }
             return isValid;
+        },
+        isArrayInts: function (param) {
+            let isValid;
+            try {
+                isValid = Array.isArray(param);
+                let listLength = param.length,
+                    i = 0;
+                while (i < listLength && isValid === true) {
+                    isValid = typeof param[i] == "number";
+                    i++;
+                }
+            } catch (err) {
+                isValid = false;
+            }
+            return isValid;
         }
     }
 }));
@@ -128,7 +143,7 @@ router.use((req, res, next) => {
 
 router.use('/homes', HomesRoutes);
 
-router.use('/items', ItemsRoutes);
+// router.use('/categories', CategoriesRoutes);
 
 router.use('/authentication', AuthenticationRoutes);
 

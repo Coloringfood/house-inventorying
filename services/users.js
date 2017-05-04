@@ -14,9 +14,9 @@ Users.authenticate = (username, password) => {
             password: password
         }
     })
-        .then((all_items_result) => {
-            if (all_items_result) {
-                return generateToken(all_items_result);
+        .then((user_find_result) => {
+            if (user_find_result) {
+                return generateToken(user_find_result);
             }
             else {
                 return Promise.reject({
@@ -86,7 +86,7 @@ function generateToken(user) {
     debug(tokenData);
     let token = jwt.sign(tokenData, config.security.secret, options);
     return {
-        id: 1,
+        id: user.id,
         token: token
     };
 }

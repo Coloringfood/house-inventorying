@@ -81,7 +81,7 @@ Houses.getAllHouses = (userId) => {
     });
 };
 
-Houses.getHouse = (id) => {
+Houses.getHouse = (id, keep_sql) => {
     debug("getHouse");
     return HousesTable.find({
         where: {
@@ -104,6 +104,9 @@ Houses.getHouse = (id) => {
                 showMessage: "House ID: " + id + " not found",
                 status: 404
             });
+        }
+        if (!keep_sql) {
+            find_result = convertHouseForUI(find_result);
         }
         return find_result;
     });
@@ -133,10 +136,12 @@ Houses.addUsersToHouse = (users, house_id) => {
     if (!Array.isArray(users)) {
         users = [users];
     }
-    let house = Houses.getHouse(house_id);
-    return Promise.map(users, (user_id) => {
-        return Houses.addUserToHouse(user_id, house)
-    })
+    return Houses.getHouse(house_id, true)
+        .then((house) => {
+            Promise.map(users, (user_id) => {
+                return Houses.addUserToHouse(user_id, house)
+            })
+        });
 };
 
 Houses.addUserToHouse = (user_id, house) => {
@@ -151,7 +156,7 @@ Houses.addUserToHouse = (user_id, house) => {
                 });
             }
 
-            return house.addUser(userResult)
+            return house.addUsers(userResult)
                 .catch((error) => {
                     return Promise.reject({
                         error: error,

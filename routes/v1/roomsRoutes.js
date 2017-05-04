@@ -2,7 +2,8 @@ let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:rooms'),
     LocationsRoutes = require('./locationsRoutes'),
-    RoomsService = require('./../../services/rooms');
+    RoomsService = require('./../../services/rooms'),
+    ItemsService = require('./../../services/items');
 
 router.use((req, res, next) => {
     req.validateRoom = () => {
@@ -83,6 +84,33 @@ router.use('/:room_id', (req, res, next) => {
 });
 
 router.use("/:room_id/locations", LocationsRoutes);
+router.route("/:room_id/items")
+    .get((req, res, next) => {
+        debug("getting all items in room: " + req.room_id);
+        return ItemsService.findItemsByRoom(req.room_id)
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((e) => {
+                next(e);
+            });
+    })
+    .post((req, res, next) => {
+        debug("Post: %o", req.body);
+        if (req.validateItem()) {
+            let body = req.body;
+            delete body.location_id;
+            body.room_id = req.room_id;
+            return ItemsService.createItem(body, req.house_id)
+                .then((result) => {
+                    debug("post result: %o", result);
+                    res.status(201).send(result);
+                })
+                .catch((e) => {
+                    next(e);
+                });
+        }
+    });
 
 router.route('/:room_id')
     .get((req, res, next) => {

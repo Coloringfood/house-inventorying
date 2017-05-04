@@ -24,22 +24,13 @@ var itemSchema = {
         type: db.INTEGER.UNSIGNED,
         default: 0
     },
-    category_id: {
-        type: db.INTEGER.UNSIGNED,
-        defaultValue: 4
-    },
     location_id: {
         type: db.INTEGER.UNSIGNED,
-        defaultValue: 4,
         required: false
     },
     room_id: {
         type: db.INTEGER.UNSIGNED,
-        defaultValue: 4,
         required: false
-    },
-    created_by_id: {
-        type: db.INTEGER.UNSIGNED
     }
 };
 
