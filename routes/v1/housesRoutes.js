@@ -9,12 +9,6 @@ router.use((req, res, next) => {
     req.validateHouse = () => {
         debug('validateHouse');
         validateHouseData();
-        if (typeof req.body.factors === 'object' && Array.isArray(req.body.factors)) {
-            let features_length = req.body.factors.length;
-            for (let i = 0; i < features_length; i++) {
-                validateFactorData('factors[' + i + ']');
-            }
-        }
 
         return req.checkErrors();
     };
@@ -28,19 +22,19 @@ router.use((req, res, next) => {
 
     req.validateItem = () => {
         debug('validateItem');
-        validateItemData();
+        validateItemData('');
 
         return req.checkErrors();
     };
 
-    function validateItemData() {
-        req.assert('name', 'This field should be a string').isString();
-        req.assert('name', 'This field should be 30 characters or less').len(0, 30);
-        req.assert('personal', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('required', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('always_needed', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
-        req.assert('categories', 'This field should be an array of ints').isArray().isArrayInts();
-    }
+    req.validateItemData = (path) => {
+        req.assert(path + 'name', 'This field should be a string').isString();
+        req.assert(path + 'name', 'This field should be 30 characters or less').len(0, 30);
+        req.assert(path + 'personal', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert(path + 'required', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert(path + 'always_needed', 'This optional field should be a Boolean').optional({checkFalsy: true}).isBoolean();
+        req.assert(path + 'categories', 'This field should be an array of ints').isArray().isArrayInts();
+    };
 
     req.validateUsers = () => {
         switch (typeof req.body.user_id) {

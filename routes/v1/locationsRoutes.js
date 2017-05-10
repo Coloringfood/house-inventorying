@@ -41,7 +41,7 @@ router.use((req, res, next) => {
             }
 
             return req.checkErrors();
-        }
+        };
 
         function validateLocationData(base_location) {
             debug('validatingCategoryData for %o', base_location);
@@ -120,7 +120,7 @@ router.route("/:location_id/items")
         debug("Post: %o", req.body);
         if (req.validateItem()) {
             let body = req.body;
-            delete body.room_id
+            body.room_id = req.room_id;
             body.location_id = req.location_id;
             return ItemsService.createItem(body, req.house_id)
                 .then((result) => {
