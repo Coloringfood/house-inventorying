@@ -34,6 +34,15 @@ function convertItemForUI(item) {
     if (itemData.room) {
         delete itemData.room
     }
+    if (itemData.categories) {
+        let category_ids = [];
+        let selectedLength = itemData.categories.length;
+        for (let i = 0; i < selectedLength; i++) {
+            let category = itemData.categories[i];
+            category_ids.push(category.id);
+        }
+        itemData.categories = category_ids;
+    }
     return itemData;
 }
 
@@ -130,7 +139,11 @@ Items.getItem = (id) => {
         attributes: ITEM_ATTRIBUTES,
         where: {
             id: id
-        }
+        },
+        include: [{
+            model: CategoriesTable,
+            attributes: ["id"]
+        }]
     }).catch((error) => {
         return Promise.reject({
             error: error,
@@ -282,43 +295,39 @@ Items.createItem = (item, house_id) => {
         });
 };
 
-// Items.updateItem = (id, item) => {
-//     debug("updateItem");
-//     if (item.personal == true) {
-//         console.log("item.created_by_id: ", item.created_by_id);
-//         console.log("userId: ", userId);
-//         if (item.created_by_id != userId) {
-//             return Promise.reject({
-//                 showMessage: "You can not mark this item private, it was not created by you",
-//                 status: 400
-//             })
-//         }
-//     }
-//     item.category_id = item.category_id || item.category.id || 4;
-//     return ItemsTable.update(item, {
-//         where: {
-//             id: id,
-//         }
-//     }).catch((error) => {
-//         return Promise.reject({
-//             error: error,
-//             message: "sequelize_error",
-//             location: "Items.updateItem sequelize update",
-//             showMessage: error.showMessage || "Error trying to update item: " + id,
-//             status: error.status || 500
-//         });
-//     }).then((updateResult) => {
-//         if (updateResult[0] === 0) {
-//             return Promise.reject({
-//                 errors: ITEM_NOT_FOUND,
-//                 location: "Items.updateItem",
-//                 showMessage: "Item ID: " + id + " not found",
-//                 status: 404
-//             });
-//         }
-//         return Items.getItem(id);
-//     });
-// };
+Items.updateItem = (id, item) => {
+    debug("updateItem");
+    let categories = item.categories;
+    return ItemsTable.update(item, {
+        where: {
+            id: id,
+        }
+    }).catch((error) => {
+        return Promise.reject({
+            error: error,
+            message: "sequelize_error",
+            location: "Items.updateItem sequelize update",
+            showMessage: error.showMessage || "Error trying to update item: " + id,
+            status: error.status || 500
+        });
+    }).then((updateResult) => {
+        if (updateResult[0] === 0) {
+            return Promise.reject({
+                errors: ITEM_NOT_FOUND,
+                location: "Items.updateItem",
+                showMessage: "Item ID: " + id + " not found",
+                status: 404
+            });
+        }
+        return ItemsTable.find({
+            where: {id: id}
+        }).then((item) => {
+            return updateCategories(item, categories).then(() => {
+                return Items.getItem(id);
+            });
+        })
+    });
+};
 
 /**
  * Marks an item deleted in the Database
@@ -348,6 +357,7 @@ Items.deleteItem = (id) => {
  * Generic search which searches by location and room
  * @param item_where        Where object if null, will be skipped
  * @param included_room     Include object that will be added to both queries
+ * @param extra_include     Optional, object that will be added as an additional include
  * @returns [object]        Array of objects
  */
 function locateItems(item_where, included_room, extra_include) {
@@ -387,4 +397,20 @@ function locateItems(item_where, included_room, extra_include) {
         .then((allItemsResult) => {
             return allItemsResult[0].concat(allItemsResult[1]);
         })
+}
+
+/**
+ * Takes an item and updates its categories
+ * @param item
+ * @param categories
+ */
+function updateCategories(item, categories) {
+    debug("updateCategories");
+    return Promise.map(categories, (CategoryId)=> {
+        return CategoriesTable.find({
+            where: {id: CategoryId}
+        })
+    }).then((category_objects) => {
+        return item.setCategories(category_objects);
+    });
 }

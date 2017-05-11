@@ -42,16 +42,16 @@ var items = db.connection.define('items', itemSchema, {
 });
 
 
-var itemsCategoriesSchema = {},
-    itemsCategories = db.connection.define('items_categories', itemsCategoriesSchema, {
+var items_categories_tableSchema = {},
+    items_categories_table = db.connection.define('items_categories', items_categories_tableSchema, {
         freezeTableName: true,
         timestamps: true,
         paranoid: false,
         underscored: true
     });
 
-items.belongsToMany(categories, {through: itemsCategories});
-categories.belongsToMany(items, {through: itemsCategories});
+items.belongsToMany(categories, {through: items_categories_table});
+categories.belongsToMany(items, {through: items_categories_table});
 
 items.belongsTo(locations, {foreignKey: 'location_id'});
 locations.hasMany(items, {foreignKey: 'location_id'});
