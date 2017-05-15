@@ -30,11 +30,15 @@ powerdialerApp.config(['$compileProvider', '$httpProvider', '$locationProvider',
             // Project specific pages
             .when('/houses', {
                 templateUrl: '/public/house-inventorying/views/homes.html',
-                controller: 'VacationsPageController as vm'
+                controller: 'HomesPageController as vm'
+            })
+            .when('/house/view/:house_id', {
+                templateUrl: '/public/house-inventorying/views/view_home.html',
+                controller: 'ViewHome as vm'
             })
             .when('/inventorying', {
                 templateUrl: '/public/house-inventorying/views/items.html',
-                controller: 'PackingController as vm'
+                controller: 'ItemsController as vm'
             })
             
             // Standard Pages

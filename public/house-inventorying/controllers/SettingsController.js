@@ -15,25 +15,6 @@ powerdialerApp.controller("SettingsController",
             vm.user.lastName = vm.user.name.substring(index).trim();
             delete vm.user.password;
 
-            vm.ages = [
-                {
-                    range: "0-2",
-                    name: "Baby"
-                },
-                {
-                    range: "2-5",
-                    name: "Toddler"
-                },
-                {
-                    range: "5-13",
-                    name: "Kid"
-                },
-                {
-                    range: "13+",
-                    name: "Adult"
-                },
-            ];
-
             HouseInventoryingService.getThemes().then((themes)=> {
                 vm.themes = themes;
                 if (!vm.user.settings.cssTheme) {
@@ -70,7 +51,6 @@ powerdialerApp.controller("SettingsController",
                 }
                 let updateCssData = {
                     "id": vm.user.id,
-                    "age": vm.user.age,
                     "settings": vm.user.settings
                 };
 

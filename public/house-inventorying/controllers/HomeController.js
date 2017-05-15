@@ -14,14 +14,14 @@ powerdialerApp.controller('HomeController',
 
             if (vm.authenticated) {
                 console.log(authService.authenticated);
-                // HouseInventoryingService.getAllHomes().then(function (vacations) {
-                //     vm.vacationsList = vacations;
-                // }).catch(function (error) {
-                //     console.log("Getting Homes Error: ", error);
-                //     NotificationProvider.error({
-                //         message: "Error Getting All Homes"
-                //     });
-                // });
+                HouseInventoryingService.getAllHomes().then(function (vacations) {
+                    vm.housesList = vacations;
+                }).catch(function (error) {
+                    console.log("Getting Homes Error: ", error);
+                    NotificationProvider.error({
+                        message: "Error Getting All Homes"
+                    });
+                });
             }
         }
     ]

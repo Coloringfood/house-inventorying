@@ -9,25 +9,6 @@ powerdialerApp.controller("RegisterController",
             'use strict';
             let vm = this;
 
-            vm.ages = [
-                {
-                    range: "0-2",
-                    name: "Baby"
-                },
-                {
-                    range: "2-5",
-                    name: "Toddler"
-                },
-                {
-                    range: "5-13",
-                    name: "Kid"
-                },
-                {
-                    range: "13+",
-                    name: "Adult"
-                },
-            ];
-
             vm.register = () => {
                 vm.dataLoading = true;
                 vm.user.name = vm.user.firstName + " " + vm.user.lastName;

@@ -38,12 +38,6 @@
                         <label for="password">Password (Warning, this is not https so the password is not encrypted. DON'T use a password you use for anything else)</label>
                         <input type="password" name="password" id="password" class="form-control" ng-model="vm.user.password" />
                     </div>
-                    <div class="form-group" ng-class="{ 'has-error': form.age.$dirty && form.age.$error.required }">
-                        <label for="age">Age Group</label>
-                        <select name="age" id="age" ng-model="vm.user.age.name" class="form-control" required>
-                            <option ng-repeat="age in vm.ages" value="{{age.name}}">{{age.name}} ({{age.range}})</option>
-                        </select>
-                    </div>
                     <div class="form-actions">
                         <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Save Changes</button>
                     </div>

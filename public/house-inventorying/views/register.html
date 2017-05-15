@@ -32,12 +32,6 @@
         <input type="password" name="password" id="password" class="form-control" ng-model="vm.user.password" required />
         <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
     </div>
-    <div class="form-group" ng-class="{ 'has-error': form.age.$dirty && form.age.$error.required }">
-        <label for="age">Age Group</label>
-        <select name="age" id="age" ng-model="vm.user.age" class="form-control" required>
-            <option ng-repeat="age in vm.ages" value="{{age.name}}">{{age.name}} ({{age.range}})</option>
-        </select>
-    </div>
     <div class="form-actions">
         <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Register</button>
         <a href="#/login" class="btn btn-link">Cancel</a>
