@@ -9,6 +9,7 @@ powerdialerApp.controller('ViewHome',
             'use strict';
             let vm = this;
             vm.name = "Items";
+            vm.editing = $routeParams.edit;
 
             function getHomeInfo() {
                 let home_id = $routeParams.house_id;
@@ -41,7 +42,15 @@ powerdialerApp.controller('ViewHome',
                     });
             }
 
-            getHomeInfo()
+            getHomeInfo();
+
+            vm.editItem = (item) => {
+                NotificationProvider.success("editing item: " + item.name);
+            };
+
+            vm.deleteItem = (item) => {
+                NotificationProvider.error("deleting item: " + item.name);
+            };
         }
     ]
 );

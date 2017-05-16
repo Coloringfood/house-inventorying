@@ -12,7 +12,7 @@ const HOUSE_ATTRIBUTES = [
     "description"
 ];
 
-function convertHouseForUI(house) {
+Houses.convertHouseForUI = (house) => {
     let houseData = house.dataValues;
     if (house.users) {
         let convertedSelected = [];
@@ -24,7 +24,7 @@ function convertHouseForUI(house) {
         houseData.users = convertedSelected;
     }
     return houseData;
-}
+};
 
 Houses.userHasAccess = (house_id, user_id) => {
     debug("check user Access for to house");
@@ -74,11 +74,6 @@ Houses.getAllHouses = (userId) => {
             showMessage: error.showMessage || "Error trying to find all houses",
             status: error.status || 500
         });
-    }).then((allHousesResult) => {
-        return Promise.map(allHousesResult, convertHouseForUI)
-            .then((results) => {
-                return results;
-            });
     });
 };
 
@@ -105,9 +100,6 @@ Houses.getHouse = (id, keep_sql) => {
                 showMessage: "House ID: " + id + " not found",
                 status: 404
             });
-        }
-        if (!keep_sql) {
-            find_result = convertHouseForUI(find_result);
         }
         return find_result;
     });
@@ -137,7 +129,7 @@ Houses.addUsersToHouse = (users, house_id) => {
     if (!Array.isArray(users)) {
         users = [users];
     }
-    return Houses.getHouse(house_id, true)
+    return Houses.getHouse(house_id)
         .then((house) => {
             Promise.map(users, (user_id) => {
                 return Houses.addUserToHouse(user_id, house)

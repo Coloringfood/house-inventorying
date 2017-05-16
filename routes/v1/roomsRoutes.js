@@ -1,6 +1,7 @@
 let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:rooms'),
+    Promise = require('bluebird'),
     LocationsRoutes = require('./locationsRoutes'),
     RoomsService = require('./../../services/rooms'),
     ItemsService = require('./../../services/items');
@@ -37,6 +38,9 @@ router.route('/')
     .get((req, res, next) => {
         debug('GET /room');
         RoomsService.getAllRooms(req.house_id)
+            .then((locations) => {
+                return Promise.map(locations, RoomsService.convertRoomForUI)
+            })
             .then((results) => {
                 res.send(results)
             })
@@ -88,6 +92,9 @@ router.route("/:room_id/items")
     .get((req, res, next) => {
         debug("getting all items in room: " + req.room_id);
         return ItemsService.findItemsByRoom(req.room_id)
+            .then((items) => {
+                return Promise.map(items, ItemsService.convertItemForUI)
+            })
             .then((result) => {
                 res.send(result);
             })
@@ -116,6 +123,9 @@ router.route('/:room_id')
     .get((req, res, next) => {
         debug("get room id:%o", req.params.room_id);
         RoomsService.getRoom(req.params.room_id)
+            .then((location) => {
+                return RoomsService.convertRoomForUI(location)
+            })
             .then((result) => {
                 res.json(result);
             })

@@ -1,6 +1,7 @@
 let express = require('express'),
     router = express.Router(),
     debug = require('debug')('house-inventorying:routes:v1:houses'),
+    Promise = require('bluebird'),
     RoomsRoutes = require('./roomsRoutes'),
     ItemsRoutes = require('./itemsRoutes'),
     HousesService = require('./../../services/houses');
@@ -57,6 +58,9 @@ router.route('/')
     .get((req, res, next) => {
         debug('GET /house');
         return HousesService.getAllHouses(req.user.userId)
+            .then((houses) => {
+                return Promise.map(houses, HousesService.convertHouseForUI)
+            })
             .then((results) => {
                 res.json(results);
             })
@@ -137,6 +141,9 @@ router.route('/:house_id')
     .get((req, res, next) => {
         debug("get house id:%o", req.params.house_id);
         return HousesService.getHouse(req.params.house_id)
+            .then((house) => {
+                return HousesService.convertHouseForUI(house)
+            })
             .then((result) => {
                 res.json(result);
             })

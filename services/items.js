@@ -4,7 +4,6 @@ let Promise = require('bluebird'),
     ItemsTable = require('./../models/items'),
     HouseTable = require('./../models/houses'),
     RoomsTable = require('./../models/rooms'),
-    LocationsTable = require('./../models/locations'),
     CategoriesTable = require('./../models/categories');
 
 const ITEM_NOT_FOUND = "item_not_found";
@@ -17,13 +16,18 @@ const ITEM_ATTRIBUTES = [
     "room_id",
     "location_id"
 ];
+const CATEGORY_INCLUDE = {
+    model: CategoriesTable,
+    attributes: ["id", "name"]
+};
 
 /**
  * Takes a sequelize db result and converts it for the UI
  * @param item      Sequelize db result object
  * @returns object  Converted object's data
  */
-function convertItemForUI(item) {
+Items.convertItemForUI = (item) => {
+    debug("convertItemForUI");
     let itemData = item.dataValues;
     if (itemData.house) {
         delete itemData.house;
@@ -38,13 +42,14 @@ function convertItemForUI(item) {
         let category_ids = [];
         let selectedLength = itemData.categories.length;
         for (let i = 0; i < selectedLength; i++) {
-            let category = itemData.categories[i];
-            category_ids.push(category.id);
+            let category = itemData.categories[i].dataValues;
+            delete category.items_categories;
+            category_ids.push(category);
         }
         itemData.categories = category_ids;
     }
     return itemData;
-}
+};
 
 /**
  * Checks if requested item ID is part of house
@@ -87,7 +92,8 @@ Items.getAllItems = (house_id) => {
                             id: house_id
                         }
                     }]
-                }
+                },
+                CATEGORY_INCLUDE
             ]
         })
         .catch((error) => {
@@ -98,12 +104,6 @@ Items.getAllItems = (house_id) => {
                 showMessage: error.showMessage || "Error trying to find all items",
                 status: error.status || 500
             });
-        })
-        .then((allItemsResult) => {
-            return Promise.map(allItemsResult, convertItemForUI)
-                .then((results) => {
-                    return results;
-                });
         });
 };
 
@@ -119,10 +119,7 @@ Items.getItem = (id) => {
         where: {
             id: id
         },
-        include: [{
-            model: CategoriesTable,
-            attributes: ["id"]
-        }]
+        include: [CATEGORY_INCLUDE]
     }).catch((error) => {
         return Promise.reject({
             error: error,
@@ -140,7 +137,7 @@ Items.getItem = (id) => {
                 status: 404
             });
         }
-        return convertItemForUI(find_result);
+        return find_result;
     });
 };
 
@@ -162,7 +159,7 @@ Items.findItemByName = (name, house_id) => {
         }]
     })
         .then((allItemsResult) => {
-            return allItemsResult[0] ? convertItemForUI(allItemsResult[0]) : "";
+            return allItemsResult[0] ? allItemsResult[0] : "";
         });
 };
 
@@ -175,7 +172,8 @@ Items.findItemsByLocation = (location_id) => {
     debug("findItemsByLocation");
     return ItemsTable.findAll({
         attributes: ITEM_ATTRIBUTES,
-        where: {location_id: location_id}
+        where: {location_id: location_id},
+        include: [CATEGORY_INCLUDE]
     }).catch((error) => {
         return Promise.reject({
             error: error,
@@ -184,8 +182,6 @@ Items.findItemsByLocation = (location_id) => {
             showMessage: error.showMessage || "Error trying to find items in location: " + location_id,
             status: error.status || 500
         });
-    }).then((find_result) => {
-        return Promise.map(find_result, convertItemForUI)
     });
 };
 
@@ -201,10 +197,7 @@ Items.findItemsByRoom = (room_id) => {
         where: {
             id: room_id
         }
-    })
-        .then((find_result) => {
-            return Promise.map(find_result, convertItemForUI)
-        });
+    });
 
 };
 
@@ -230,10 +223,7 @@ Items.findItemsByCategory = (category_id, house_id) => {
             model: CategoriesTable,
             where: {id: category_id}
         }
-    )
-        .then((find_result) => {
-            return Promise.map(find_result, convertItemForUI)
-        });
+    );
 };
 
 /**
@@ -268,8 +258,15 @@ Items.createItem = (item, house_id) => {
                     });
                 })
                 .then((create_result) => {
-                    console.log("create_result: ", create_result);
-                    return {id: create_result.dataValues.id};
+                    let connect_category = Promise.resolve("");
+                    if (item.categories) {
+                        connect_category = Promise.map(item.categories, (category) => {
+                            return category
+                        })
+                    }
+                    return connect_category.then(() => {
+                        return {id: create_result.dataValues.id};
+                    })
                 });
         });
 };
@@ -279,7 +276,7 @@ Items.updateItem = (id, item) => {
     let categories = item.categories;
     return ItemsTable.update(item, {
         where: {
-            id: id,
+            id: id
         }
     }).catch((error) => {
         return Promise.reject({
@@ -340,30 +337,18 @@ Items.deleteItem = (id) => {
  * @returns [object]        Array of objects
  */
 function locateItems(item_where, included_room, extra_include) {
-    let room_include = [included_room].concat(extra_include),
-        location_include = [
-            {
-                model: LocationsTable,
-                include: [included_room]
-            }].concat(extra_include);
+    let room_include = [included_room, CATEGORY_INCLUDE].concat(extra_include);
 
     if (extra_include == null) {
-        room_include = [room_include[0]];
-        location_include = [location_include[0]];
+        room_include = [room_include[0], CATEGORY_INCLUDE];
     }
 
-    let by_room_promise = ItemsTable.findAll({
-        attributes: ITEM_ATTRIBUTES,
-        where: item_where,
-        include: room_include
-    });
-    let by_location_promise = ItemsTable.findAll({
-        attributes: ITEM_ATTRIBUTES,
-        where: item_where,
-        include: location_include
-    });
-
-    return Promise.all([by_location_promise, by_room_promise])
+    return ItemsTable.findAll(
+        {
+            attributes: ITEM_ATTRIBUTES,
+            where: item_where,
+            include: room_include
+        })
         .catch((error) => {
             return Promise.reject({
                 error: error,
@@ -372,9 +357,6 @@ function locateItems(item_where, included_room, extra_include) {
                 showMessage: error.showMessage || "Error trying to find all items",
                 status: error.status || 500
             });
-        })
-        .then((allItemsResult) => {
-            return allItemsResult[0].concat(allItemsResult[1]);
         })
 }
 

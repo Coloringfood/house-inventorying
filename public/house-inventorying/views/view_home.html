@@ -5,8 +5,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-sm-6"><h4>
-                                Welcome to your home {{vm.house.name}}</h4></div>
+                            <div class="col-sm-6">
+                                <h4> Welcome to your home {{vm.house.name}}</h4>
+                            </div>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -16,12 +17,14 @@
                         <tr>
                             <th>Name</th>
                             <th>Category</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
-                        <tr ng-repeat="item in vm.itemsList track by item.id">
+                        <tr ng-repeat="item in vm.items track by item.id">
                             <td>{{item.name}}</td>
                             <td>
-                                {{item.category.name}}
+                                <span ng-repeat="category in item.categories track by category.id">
+                                    {{category.name}}
+                                </span>
                             </td>
                             <td>
                                 <a class="btn" ng-click="vm.editItem(item)">edit</a>

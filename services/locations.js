@@ -12,13 +12,13 @@ const LOCATION_ATTRIBUTES = [
 ];
 const LOCATION_NOT_FOUND = "location_not_found";
 
-function convertLocationForUI(location) {
+Locations.convertLocationForUI = (location) => {
     let locationData = location.dataValues;
     if (locationData.room) {
         delete locationData.room;
     }
     return locationData;
-}
+};
 
 Locations.locationBelongsToRoom = (location_id, room_id) => {
     debug("check user Access to location: " + location_id + " in room: " + room_id);
@@ -53,9 +53,6 @@ Locations.getAllLocations = (room_id) => {
             order: [
                 ["name", "ASC"]
             ]
-        })
-        .then((all_items_result) => {
-            return Promise.map(all_items_result, convertLocationForUI);
         });
 };
 
@@ -84,10 +81,7 @@ Locations.getLocation = (location_id) => {
                 ["name", "ASC"]
             ]
         }
-    )
-        .then((locationResult) => {
-            return convertLocationForUI(locationResult);
-        })
+    );
 };
 
 Locations.updateLocation = (id, location) => {

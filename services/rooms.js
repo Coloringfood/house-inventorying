@@ -11,13 +11,13 @@ const ROOM_ATTRIBUTES = [
 ];
 const ROOM_NOT_FOUND = "room_not_found";
 
-function convertRoomForUI(room) {
+Rooms.convertRoomForUI = (room) => {
     let roomData = room.dataValues;
     if (roomData.house) {
         delete roomData.house;
     }
     return roomData;
-}
+};
 
 Rooms.getAllRooms = (house_id) => {
     debug("getAllRooms");
@@ -42,9 +42,6 @@ Rooms.getAllRooms = (house_id) => {
                 showMessage: error.showMessage || "Error trying to find all rooms for house id: " + house_id,
                 status: error.status || 500
             });
-        })
-        .then((all_items_result) => {
-            return Promise.map(all_items_result, convertRoomForUI);
         });
 };
 
