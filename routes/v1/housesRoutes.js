@@ -16,13 +16,15 @@ router.use((req, res, next) => {
     function validateHouseData() {
         req.assert('name', 'This field should be a string').isString();
         req.assert('name', 'This field should be 30 characters or less').len(0, 30);
+        req.assert('address', 'This field should be a string').optional({checkFalsy: true}).isString();
+        req.assert('address', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 100);
         req.assert('description', 'This field should be a string').optional({checkFalsy: true}).isString();
         req.assert('description', 'This field should be 30 characters or less').optional({checkFalsy: true}).len(0, 300);
     }
 
     req.validateItem = () => {
         debug('validateItem');
-        validateItemData('');
+        req.validateItemData('');
 
         return req.checkErrors();
     };

@@ -14,20 +14,32 @@ powerdialerApp.factory(
 
             let HouseInventoryingService = {};
 
-            HouseInventoryingService.convertHomeForUi = (homeData) =>{
+            HouseInventoryingService.convertHomeForUi = (homeData) => {
+                return homeData;
+            };
+            HouseInventoryingService.convertItemForUi = (homeData) => {
                 return homeData;
             };
 
-            // HouseInventoryingService.getAllItems = () => {
-            //     return restangularFactory.one('items').get()
-            //         .then(function (returnedData) {
-            //             if (debugging) {
-            //                 console.log("getAllItems: ", returnedData);
-            //             }
-            //             return returnedData;
-            //         });
-            // };
-            //
+            HouseInventoryingService.getHomesItems = (home_id) => {
+                if (debugging) {
+                    console.log("getting items for home: " + home_id)
+                }
+                return restangularFactory.one('homes', home_id).one("items").get()
+                    .then(function (returnedData) {
+                        if (debugging) {
+                            console.log("getAllItems: ", returnedData);
+                        }
+                        return $q.all(returnedData.map(HouseInventoryingService.convertItemForUi))
+                            .then(function (returnedData) {
+                                if (debugging) {
+                                    console.log("Converted Items Data: ", returnedData);
+                                }
+                                return returnedData;
+                            });
+                    });
+            };
+
             // HouseInventoryingService.saveItem = (itemData, itemId) => {
             //     let convertedItem = convertItemForApi(itemData);
             //     return restangularFactory.allUrl('.').customPUT(convertedItem, "items/" + itemId)
@@ -86,17 +98,17 @@ powerdialerApp.factory(
                     });
             };
 
-            // HouseInventoryingService.getHome = (homeId) => {
-            //     return restangularFactory.one('homes', homeId).get()
-            //         .then(function (returnedData) {
-            //             let home = HouseInventoryingService.convertHomeForUi(returnedData);
-            //             if (debugging) {
-            //                 console.log("getHome: ", home);
-            //             }
-            //             return home;
-            //         });
-            // };
-            //
+            HouseInventoryingService.getHome = (homeId) => {
+                return restangularFactory.one('homes', homeId).get()
+                    .then(function (returnedData) {
+                        let home = HouseInventoryingService.convertHomeForUi(returnedData);
+                        if (debugging) {
+                            console.log("getHome: ", home);
+                        }
+                        return home;
+                    });
+            };
+
             // HouseInventoryingService.saveHome = (homeData, homeId) => {
             //     let convertedHome = convertHomeForApi(homeData);
             //

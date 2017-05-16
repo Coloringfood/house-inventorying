@@ -12,6 +12,10 @@ var houseSchema = {
         type: db.STRING(30),
         allowNull: false
     },
+    address: {
+        type: db.STRING(100),
+        default: ""
+    },
     description: {
         type: db.STRING(300),
         default: ""

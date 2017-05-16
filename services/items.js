@@ -75,26 +75,11 @@ Items.itemIsInHouse = (id, house_id) => {
  */
 Items.getAllItems = (house_id) => {
     debug("getAllItems");
-    let by_room_promise = ItemsTable.findAll({
-        attributes: ITEM_ATTRIBUTES,
-        include: [
-            {
-                model: RoomsTable,
-                include: [{
-                    model: HouseTable,
-                    where: {
-                        id: house_id
-                    }
-                }]
-            }
-        ]
-    });
-    let by_location_promise = ItemsTable.findAll({
-        attributes: ITEM_ATTRIBUTES,
-        include: [
-            {
-                model: LocationsTable,
-                include: [{
+    return ItemsTable.findAll(
+        {
+            attributes: ITEM_ATTRIBUTES,
+            include: [
+                {
                     model: RoomsTable,
                     include: [{
                         model: HouseTable,
@@ -102,11 +87,9 @@ Items.getAllItems = (house_id) => {
                             id: house_id
                         }
                     }]
-                }]
-            }
-        ]
-    });
-    return Promise.all([by_location_promise, by_room_promise])
+                }
+            ]
+        })
         .catch((error) => {
             return Promise.reject({
                 error: error,
@@ -115,10 +98,6 @@ Items.getAllItems = (house_id) => {
                 showMessage: error.showMessage || "Error trying to find all items",
                 status: error.status || 500
             });
-        })
-        .then((allItemsResult) => {
-            // combine results
-            return allItemsResult[0].concat(allItemsResult[1]);
         })
         .then((allItemsResult) => {
             return Promise.map(allItemsResult, convertItemForUI)

@@ -2,16 +2,46 @@ powerdialerApp.controller('ViewHome',
     [
         '$scope',
         'HouseInventoryingService',
+        '$routeParams',
         'Notification',
-        '$uibModal',
         '$q',
-        '$window',
-        function ($scope, HouseInventoryingService, NotificationProvider, $uibModal, $q, $window) {
+        function ($scope, HouseInventoryingService, $routeParams, NotificationProvider, $q) {
             'use strict';
-
             let vm = this;
             vm.name = "Items";
-            console.log("Viewing Specific Home");
+
+            function getHomeInfo() {
+                let home_id = $routeParams.house_id;
+                let home_promise = HouseInventoryingService.getHome(home_id)
+                    .then((home) => {
+                        vm.home = home
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        NotificationProvider.error("Error Loading Home.");
+                        return $q.reject(null);
+                    });
+
+                let items_promise = HouseInventoryingService.getHomesItems(home_id)
+                    .then((items) => {
+                        vm.items = items
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        NotificationProvider.error("Error Loading Items.");
+                        return $q.reject(null);
+                    });
+
+                return $q.all([home_promise, items_promise])
+                    .catch((error) => {
+                        if (error != null) {
+                            console.log(error);
+                            NotificationProvider.error("Error Occurred, see logs.");
+                        }
+                    });
+            }
+
+            getHomeInfo()
         }
     ]
 );

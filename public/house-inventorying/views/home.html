@@ -18,45 +18,22 @@
                    ng-class="{'glyphicon-chevron-down': status.instructions, 'glyphicon-chevron-right': !status.instructions}"></i>
             </uib-accordion-heading>
             <p>
-                Working Features:
+                Initial Release Features:
             </p>
             <ul>
                 <li>Creating of a House</li>
                 <li>Inventorying of your items in your house</li>
                 <li>Searching for locations of items</li>
                 <li>Searching for locations of types of items</li>
+                <li>Sharing your house with another user</li>
             </ul>
             <p>
                 Upcoming Features:
             </p>
             <ul>
                 <li>2D Rendering of floors (Map View)</li>
-                <li>Sharing your house with another user</li>
                 <li>Searching items will highlight their location on a map where it should be located</li>
             </ul>
         </div>
     </uib-accordion>
-</div>
-<div class="row row-offcanvas row-offcanvas-right" ng-if="vm.authenticated">
-    <div class="col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Your Houses</h2>
-            </div>
-            <div class="panel-body">
-                <table>
-                    <tr>
-                        <th class="col-md-2">House</th>
-                        <th class="col-md-2"></th>
-                    </tr>
-                    <tr ng-repeat="house in vm.housesList track by house.id">
-                        <td>{{house.name}}</td>
-                        <td>
-                            <a class="btn" href="#/house/view/{{house.id}}">View Items</a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
 </div>

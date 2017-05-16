@@ -30,15 +30,18 @@ powerdialerApp.config(['$compileProvider', '$httpProvider', '$locationProvider',
             // Project specific pages
             .when('/houses', {
                 templateUrl: '/public/house-inventorying/views/homes.html',
-                controller: 'HomesPageController as vm'
+                controller: 'HomesPageController as vm',
+                authorize: true
             })
-            .when('/house/view/:house_id', {
+            .when('/house/:house_id', {
                 templateUrl: '/public/house-inventorying/views/view_home.html',
-                controller: 'ViewHome as vm'
+                controller: 'ViewHome as vm',
+                authorize: true
             })
             .when('/inventorying', {
                 templateUrl: '/public/house-inventorying/views/items.html',
-                controller: 'ItemsController as vm'
+                controller: 'ItemsController as vm',
+                authorize: true
             })
             
             // Standard Pages
@@ -59,9 +62,12 @@ powerdialerApp.config(['$compileProvider', '$httpProvider', '$locationProvider',
                 controller: 'SettingsController as vm',
                 authorize: true
             })
-            .otherwise({
-                templateUrl: '/public/house-inventorying/views/home.html',
+            .when('/', {
+                templateUrl: "/public/house-inventorying/views/home.html",
                 controller: 'HomeController as vm'
+            })
+            .otherwise({
+                templateUrl: '/public/house-inventorying/views/404.html'
             });
 
         $locationProvider.html5Mode({

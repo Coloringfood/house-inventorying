@@ -8,6 +8,7 @@ const HOUSE_NOT_FOUND = "house_not_found";
 const HOUSE_ATTRIBUTES = [
     "id",
     "name",
+    "address",
     "description"
 ];
 

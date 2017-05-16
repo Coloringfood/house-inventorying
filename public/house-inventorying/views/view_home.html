@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="tile">
+        <div class="tileContent">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-sm-6"><h4>
+                                Welcome to your home {{vm.house.name}}</h4></div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        Search for Items:
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="item in vm.itemsList track by item.id">
+                            <td>{{item.name}}</td>
+                            <td>
+                                {{item.category.name}}
+                            </td>
+                            <td>
+                                <a class="btn" ng-click="vm.editItem(item)">edit</a>
+                                <a class="btn" ng-click="vm.deleteItem(item)">delete</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
