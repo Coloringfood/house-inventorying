@@ -33,6 +33,11 @@ powerdialerApp.config(['$compileProvider', '$httpProvider', '$locationProvider',
                 controller: 'HomesPageController as vm',
                 authorize: true
             })
+            .when('/house/create', {
+                templateUrl: '/public/house-inventorying/views/home_creator.html',
+                controller: 'HomeCreatorController as vm',
+                authorize: true
+            })
             .when('/house/:house_id', {
                 templateUrl: '/public/house-inventorying/views/view_home.html',
                 controller: 'ViewHome as vm',

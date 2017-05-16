@@ -1,0 +1,101 @@
+<div class="container-fluid">
+    <div class="title"><h2>{{vm.name}}</h2></div>
+
+    <uib-tabset active="vm.pagination.current_page">
+        <uib-tab index="1" heading="House Information">
+            <form name="form" ng-submit="vm.validateHouse()" role="form">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group"
+                             ng-class="{ 'has-error': form.houseName.$dirty && form.houseName.$error.required }">
+                            <label for="houseName">First name</label>
+                            <input type="text" name="houseName" id="houseName" class="form-control"
+                                   ng-model="vm.home.name" maxlength="30" required/>
+                            <span ng-show="form.houseName.$dirty && form.houseName.$error.required" class="help-block">
+                                House Name is required
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" name="address" id="address" class="form-control"
+                                   ng-model="vm.home.address" maxlength="100"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" name="description" id="description" class="form-control"
+                                   ng-model="vm.home.description" maxlength="300"/>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-actions">
+                    <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Next
+                    </button>
+                </div>
+            </form>
+        </uib-tab>
+        <uib-tab index="2" heading="Create Rooms" disable="vm.pagination.furthest_page < 2 || form.$error.required">
+            // TODO: Make Room!<br>
+
+            <br>
+            <button class="btn btn-default btn-info" ng-click="vm.setPage(1)">
+                Back
+            </button>
+            <button class="btn btn-default btn-info" ng-click="vm.setPage(3)">
+                Next
+            </button>
+        </uib-tab>
+        <uib-tab index="3" heading="Verify" disable="vm.pagination.furthest_page < 3 || form.$error.required">
+            Make sure its all covered correctly. Last Chance!! (except going back to edit later...)
+            <uib-accordion close-others="true">
+                <div uib-accordion-group class="panel-default" is-open="status.view_house">
+                    <uib-accordion-heading>
+                        House Info <i class="pull-right glyphicon"
+                                      ng-class="{'glyphicon-chevron-down': status.view_house, 'glyphicon-chevron-right': !status.view_house}"></i>
+                    </uib-accordion-heading>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Name</div>
+                                <div class="panel-body">
+                                    {{vm.home.name}}
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Address</div>
+                                <div class="panel-body">
+                                    {{vm.home.address}}
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Description</div>
+                                <div class="panel-body">
+                                    {{vm.home.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div uib-accordion-group class="panel-default" is-open="status.view_rooms">
+                    <uib-accordion-heading>
+                        Rooms Info <i class="pull-right glyphicon"
+                                      ng-class="{'glyphicon-chevron-down': status.view_rooms, 'glyphicon-chevron-right': !status.view_rooms}"></i>
+                    </uib-accordion-heading>
+                    <div class="row">
+                        // TODO: Show Rooms and any included locations
+                    </div>
+                </div>
+            </uib-accordion>
+
+
+            <br>
+            <button class="btn btn-default btn-info" ng-click="vm.setPage(2)">
+                Back
+            </button>
+        </uib-tab>
+    </uib-tabset>
+</div>
