@@ -46,3 +46,5 @@ jspm_packages
 /public/common/constants.js
 /public/assets/css/base.css
 /config/ui-config.json
+/ssl/
+build/
