@@ -1,21 +1,21 @@
 {
   "database": {
-    "connectionLimit": 10,
-    "database": "house-inventorying",
-    "dialect": "mysql",
-    "host": "localhost",
-    "password": "password",
-    "username": "root"
+	"connectionLimit": 10,
+	"database": "house-inventorying",
+	"dialect": "mysql",
+	"host": "localhost",
+	"password": "password",
+	"username": "root"
   },
   "security": {
-    "secret": "BLAH",
-    "issuer": "SELF",
-    "expiration": 6000
+	"secret": "BLAH",
+	"issuer": "SELF",
+	"expiration": 6000
   },
   "ssl": {
-    "key": "./ssl/server.key",
-    "cert": "./ssl/server.crt",
-    "passphrase": "mypassphrase"
+	"key": "./ssl/server.key",
+	"cert": "./ssl/server.crt",
+	"passphrase": "mypassphrase"
   },
   "logger": "combined"
 }

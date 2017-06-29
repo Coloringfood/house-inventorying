@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>House Inventorying</title>
-    <link rel="profile" href="http://www.w3.org/2005/10/profile"/>
-    <link rel="icon" type="image/png" href="/public/assets/images/favicon.ico">
-    <!-- build:style vendor -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>House Inventorying</title>
+	<link rel="profile" href="http://www.w3.org/2005/10/profile"/>
+	<link rel="icon" type="image/png" href="/public/assets/images/favicon.ico">
+	<!-- build:style vendor -->
 
-    <link rel="stylesheet" type="text/css" href="/public/assets/ext/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css"
-          href="/public/assets/ext/angular-ui-notification/dist/angular-ui-notification.min.css">
-    <!-- Default CSS Theme -->
-    <link rel="stylesheet" type="text/css" href="/public/assets/css/themes/slate.css">
-    <!-- /build -->
-    <!-- build:style app -->
-    <link rel="stylesheet" href="/public/assets/css/base.css">
-    <!-- /build -->
+	<link rel="stylesheet" type="text/css" href="/public/assets/ext/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css"
+	      href="/public/assets/ext/angular-ui-notification/dist/angular-ui-notification.min.css">
+	<!-- Default CSS Theme -->
+	<link rel="stylesheet" type="text/css" href="/public/assets/css/themes/slate.css">
+	<!-- /build -->
+	<!-- build:style app -->
+	<link rel="stylesheet" href="/public/assets/css/base.css">
+	<!-- /build -->
 
-    <base href="/">
+	<base href="/">
 </head>
 
 <body ng-app="HouseInventoryingApp">
 <nav class="navbar navbar-default navbar-fixed-top" ng-controller="HeaderController">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" ng-click="toggleMenu()">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#/">House Inventorying</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse" ng-class="{in:showMenu}">
-            <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('/')}"><a href="#/" ng-click="toggleMenu()">Home</a></li>
-                <li ng-class="{ active: isActive('/houses')}" ng-show="authenticated" ng-click="toggleMenu()"
-                    class="ng-cloak">
-                    <a href="#/houses">Houses</a>
-                </li>
-                <li ng-class="{ active: isActive('/inventorying')}" ng-show="authenticated" ng-click="toggleMenu()"
-                    class="ng-cloak">
-                    <a href="#/inventorying">Inventory Items</a>
-                </li>
-            </ul>
-            <ul class="ng-cloak nav navbar-nav navbar-right">
-                <li ng-class="{ active: isActive('/login')}" ng-show="!authenticated" ng-click="toggleMenu()">
-                    <a href="#/login">Login</a>
-                </li>
-                <li ng-class="{ active: isActive('/settings')}" ng-show="authenticated" ng-click="toggleMenu()">
-                    <a href="#/settings">Welcome {{name}}</a>
-                </li>
-                <li ng-class="{ active: isActive('/logout')}" ng-show="authenticated" ng-click="toggleMenu()">
-                    <a href="#/logout">Logout</a>
-                </li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" ng-click="toggleMenu()">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#/">House Inventorying</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse" ng-class="{in:showMenu}">
+			<ul class="nav navbar-nav">
+				<li ng-class="{ active: isActive('/')}"><a href="#/" ng-click="toggleMenu()">Home</a></li>
+				<li ng-class="{ active: isActive('/houses')}" ng-show="authenticated" ng-click="toggleMenu()"
+				    class="ng-cloak">
+					<a href="#/houses">Houses</a>
+				</li>
+				<li ng-class="{ active: isActive('/inventorying')}" ng-show="authenticated" ng-click="toggleMenu()"
+				    class="ng-cloak">
+					<a href="#/inventorying">Inventory Items</a>
+				</li>
+			</ul>
+			<ul class="ng-cloak nav navbar-nav navbar-right">
+				<li ng-class="{ active: isActive('/login')}" ng-show="!authenticated" ng-click="toggleMenu()">
+					<a href="#/login">Login</a>
+				</li>
+				<li ng-class="{ active: isActive('/settings')}" ng-show="authenticated" ng-click="toggleMenu()">
+					<a href="#/settings">Welcome {{name}}</a>
+				</li>
+				<li ng-class="{ active: isActive('/logout')}" ng-show="authenticated" ng-click="toggleMenu()">
+					<a href="#/logout">Logout</a>
+				</li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
 </nav>
 <div class="container" ng-view class="ng-cloak"></div>
 <!-- build:script vendor -->

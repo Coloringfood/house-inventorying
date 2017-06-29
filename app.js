@@ -21,11 +21,11 @@ app.set('view engine', 'jade');
  * CORS fixing Allowing for anywhere
  */
 app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE");
-    res.header('Access-Control-Allow-Headers', "Content-Type");
+	res.header('Access-Control-Allow-Origin', "*");
+	res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE");
+	res.header('Access-Control-Allow-Headers', "Content-Type");
 
-    next();
+	next();
 });
 app.use(logger(config.logger));
 
@@ -42,33 +42,33 @@ app.use('', default_route);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.showMessage = "Page Not found";
-    err.status = 404;
-    next(err);
+	var err = new Error('Not Found');
+	err.showMessage = "Page Not found";
+	err.status = 404;
+	next(err);
 });
 
 // error handlers
 
 app.use(function (err, req, res, next) {
-    debug('next called: %o', err);
-    console.log("Catch all err: ", err);
-    var status = (typeof err.status === 'undefined') ? 500 : err.status;
-    var unspecifiedErrorMessage = "The server experienced an error, see logs";
-    if (typeof err.showMessage === 'undefined') {
-        err.showMessage = (typeof err.defaultMessage === 'undefined') ? unspecifiedErrorMessage : err.defaultMessage;
-    } else if (err.name == 'UnauthorizedError') {
-        err.showMessage = err.message;
-    }
-    var response = {
-        error: err.errors || true,
-        message: err.showMessage,
-        status: status
-    };
-    res.status(status)
-        .send(response);
+	debug('next called: %o', err);
+	console.log("Catch all err: ", err);
+	var status = (typeof err.status === 'undefined') ? 500 : err.status;
+	var unspecifiedErrorMessage = "The server experienced an error, see logs";
+	if (typeof err.showMessage === 'undefined') {
+		err.showMessage = (typeof err.defaultMessage === 'undefined') ? unspecifiedErrorMessage : err.defaultMessage;
+	} else if (err.name == 'UnauthorizedError') {
+		err.showMessage = err.message;
+	}
+	var response = {
+		error: err.errors || true,
+		message: err.showMessage,
+		status: status
+	};
+	res.status(status)
+		.send(response);
 
-    debug('Error: %o', response);
+	debug('Error: %o', response);
 });
 
 

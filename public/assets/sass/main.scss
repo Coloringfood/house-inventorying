@@ -4,7 +4,7 @@ body {
   padding-top: 70px;
 }
 
-.dropdown-menu{
+.dropdown-menu {
   padding-left: 8px;
 }
 
@@ -44,7 +44,7 @@ body {
 ul.no-indent {
   padding-left: 10px;
   &.no-bullet {
-    padding-left: 0;
+	padding-left: 0;
   }
 }
 
@@ -60,17 +60,17 @@ ul.no-bullet {
   float: right;
 }
 
-.ng-cloak{
-  display:none;
+.ng-cloak {
+  display: none;
 }
 
-.tooltip.large-tooltip{
+.tooltip.large-tooltip {
   opacity: 1;
-  .tooltip-inner{
-    max-width: 400px;
+  .tooltip-inner {
+	max-width: 400px;
 
-    .panel {
-      margin-bottom: auto;
-    }
+	.panel {
+	  margin-bottom: auto;
+	}
   }
 }

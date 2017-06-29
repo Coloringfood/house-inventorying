@@ -1,24 +1,24 @@
 let Items = module.exports = {};
 let Promise = require('bluebird'),
-    debug = require('debug')('house-inventorying:services:items'),
-    ItemsTable = require('./../models/items'),
-    HouseTable = require('./../models/houses'),
-    RoomsTable = require('./../models/rooms'),
-    CategoriesTable = require('./../models/categories');
+	debug = require('debug')('house-inventorying:services:items'),
+	ItemsTable = require('./../models/items'),
+	HouseTable = require('./../models/houses'),
+	RoomsTable = require('./../models/rooms'),
+	CategoriesTable = require('./../models/categories');
 
 const ITEM_NOT_FOUND = "item_not_found";
 const ITEM_ATTRIBUTES = [
-    "id",
-    "name",
-    "description",
-    "picture_location",
-    "price",
-    "room_id",
-    "location_id"
+	"id",
+	"name",
+	"description",
+	"picture_location",
+	"price",
+	"room_id",
+	"location_id"
 ];
 const CATEGORY_INCLUDE = {
-    model: CategoriesTable,
-    attributes: ["id", "name"]
+	model: CategoriesTable,
+	attributes: ["id", "name"]
 };
 
 /**
@@ -27,28 +27,28 @@ const CATEGORY_INCLUDE = {
  * @returns object  Converted object's data
  */
 Items.convertItemForUI = (item) => {
-    debug("convertItemForUI");
-    let itemData = item.dataValues;
-    if (itemData.house) {
-        delete itemData.house;
-    }
-    if (itemData.location) {
-        delete itemData.location
-    }
-    if (itemData.room) {
-        delete itemData.room
-    }
-    if (itemData.categories) {
-        let category_ids = [];
-        let selectedLength = itemData.categories.length;
-        for (let i = 0; i < selectedLength; i++) {
-            let category = itemData.categories[i].dataValues;
-            delete category.items_categories;
-            category_ids.push(category);
-        }
-        itemData.categories = category_ids;
-    }
-    return itemData;
+	debug("convertItemForUI");
+	let itemData = item.dataValues;
+	if (itemData.house) {
+		delete itemData.house;
+	}
+	if (itemData.location) {
+		delete itemData.location
+	}
+	if (itemData.room) {
+		delete itemData.room
+	}
+	if (itemData.categories) {
+		let category_ids = [];
+		let selectedLength = itemData.categories.length;
+		for (let i = 0; i < selectedLength; i++) {
+			let category = itemData.categories[i].dataValues;
+			delete category.items_categories;
+			category_ids.push(category);
+		}
+		itemData.categories = category_ids;
+	}
+	return itemData;
 };
 
 /**
@@ -58,19 +58,19 @@ Items.convertItemForUI = (item) => {
  * @returns boolean True if item is in house
  */
 Items.itemIsInHouse = (id, house_id) => {
-    debug("check if Item (" + id + ") is in house (" + house_id + ")");
-    return locateItems({id: id}, {
-        model: RoomsTable,
-        include: [{
-            model: HouseTable,
-            where: {
-                id: house_id
-            }
-        }]
-    })
-        .then((find_result) => {
-            return !!find_result;
-        });
+	debug("check if Item (" + id + ") is in house (" + house_id + ")");
+	return locateItems({id: id}, {
+		model: RoomsTable,
+		include: [{
+			model: HouseTable,
+			where: {
+				id: house_id
+			}
+		}]
+	})
+		.then((find_result) => {
+			return !!find_result;
+		});
 };
 
 /**
@@ -79,32 +79,32 @@ Items.itemIsInHouse = (id, house_id) => {
  * @returns [object]    Array of items
  */
 Items.getAllItems = (house_id) => {
-    debug("getAllItems");
-    return ItemsTable.findAll(
-        {
-            attributes: ITEM_ATTRIBUTES,
-            include: [
-                {
-                    model: RoomsTable,
-                    include: [{
-                        model: HouseTable,
-                        where: {
-                            id: house_id
-                        }
-                    }]
-                },
-                CATEGORY_INCLUDE
-            ]
-        })
-        .catch((error) => {
-            return Promise.reject({
-                error: error,
-                message: "sequelize_error",
-                location: "Items.getAllItems sequelize findall",
-                showMessage: error.showMessage || "Error trying to find all items",
-                status: error.status || 500
-            });
-        });
+	debug("getAllItems");
+	return ItemsTable.findAll(
+		{
+			attributes: ITEM_ATTRIBUTES,
+			include: [
+				{
+					model: RoomsTable,
+					include: [{
+						model: HouseTable,
+						where: {
+							id: house_id
+						}
+					}]
+				},
+				CATEGORY_INCLUDE
+			]
+		})
+		.catch((error) => {
+			return Promise.reject({
+				error: error,
+				message: "sequelize_error",
+				location: "Items.getAllItems sequelize findall",
+				showMessage: error.showMessage || "Error trying to find all items",
+				status: error.status || 500
+			});
+		});
 };
 
 /**
@@ -113,32 +113,32 @@ Items.getAllItems = (house_id) => {
  * @returns object      Data of the item
  */
 Items.getItem = (id) => {
-    debug("getItem");
-    return ItemsTable.find({
-        attributes: ITEM_ATTRIBUTES,
-        where: {
-            id: id
-        },
-        include: [CATEGORY_INCLUDE]
-    }).catch((error) => {
-        return Promise.reject({
-            error: error,
-            message: "sequelize_error",
-            location: "Items.getItem sequelize find",
-            showMessage: error.showMessage || "Error trying to find item id: " + id,
-            status: error.status || 500
-        });
-    }).then((find_result) => {
-        if (find_result === null) {
-            return Promise.reject({
-                errors: ITEM_NOT_FOUND,
-                location: "Items.getItem",
-                showMessage: "Item ID: " + id + " not found",
-                status: 404
-            });
-        }
-        return find_result;
-    });
+	debug("getItem");
+	return ItemsTable.find({
+		attributes: ITEM_ATTRIBUTES,
+		where: {
+			id: id
+		},
+		include: [CATEGORY_INCLUDE]
+	}).catch((error) => {
+		return Promise.reject({
+			error: error,
+			message: "sequelize_error",
+			location: "Items.getItem sequelize find",
+			showMessage: error.showMessage || "Error trying to find item id: " + id,
+			status: error.status || 500
+		});
+	}).then((find_result) => {
+		if (find_result === null) {
+			return Promise.reject({
+				errors: ITEM_NOT_FOUND,
+				location: "Items.getItem",
+				showMessage: "Item ID: " + id + " not found",
+				status: 404
+			});
+		}
+		return find_result;
+	});
 };
 
 /**
@@ -148,19 +148,19 @@ Items.getItem = (id) => {
  * @returns object  Data of the item
  */
 Items.findItemByName = (name, house_id) => {
-    debug("findItemByName");
-    return locateItems({"name": name}, {
-        model: RoomsTable,
-        include: [{
-            model: HouseTable,
-            where: {
-                id: house_id
-            }
-        }]
-    })
-        .then((allItemsResult) => {
-            return allItemsResult[0] ? allItemsResult[0] : "";
-        });
+	debug("findItemByName");
+	return locateItems({"name": name}, {
+		model: RoomsTable,
+		include: [{
+			model: HouseTable,
+			where: {
+				id: house_id
+			}
+		}]
+	})
+		.then((allItemsResult) => {
+			return allItemsResult[0] ? allItemsResult[0] : "";
+		});
 };
 
 /**
@@ -169,20 +169,20 @@ Items.findItemByName = (name, house_id) => {
  * @returns [object]    Array of items
  */
 Items.findItemsByLocation = (location_id) => {
-    debug("findItemsByLocation");
-    return ItemsTable.findAll({
-        attributes: ITEM_ATTRIBUTES,
-        where: {location_id: location_id},
-        include: [CATEGORY_INCLUDE]
-    }).catch((error) => {
-        return Promise.reject({
-            error: error,
-            message: "sequelize_error",
-            location: "Items.findItemsByLocation sequelize find",
-            showMessage: error.showMessage || "Error trying to find items in location: " + location_id,
-            status: error.status || 500
-        });
-    });
+	debug("findItemsByLocation");
+	return ItemsTable.findAll({
+		attributes: ITEM_ATTRIBUTES,
+		where: {location_id: location_id},
+		include: [CATEGORY_INCLUDE]
+	}).catch((error) => {
+		return Promise.reject({
+			error: error,
+			message: "sequelize_error",
+			location: "Items.findItemsByLocation sequelize find",
+			showMessage: error.showMessage || "Error trying to find items in location: " + location_id,
+			status: error.status || 500
+		});
+	});
 };
 
 /**
@@ -191,13 +191,13 @@ Items.findItemsByLocation = (location_id) => {
  * @returns [object]    Array of items
  */
 Items.findItemsByRoom = (room_id) => {
-    debug("findItemsByRoom");
-    return locateItems(null, {
-        model: RoomsTable,
-        where: {
-            id: room_id
-        }
-    });
+	debug("findItemsByRoom");
+	return locateItems(null, {
+		model: RoomsTable,
+		where: {
+			id: room_id
+		}
+	});
 
 };
 
@@ -208,22 +208,22 @@ Items.findItemsByRoom = (room_id) => {
  * @returns [objects]   Array of items
  */
 Items.findItemsByCategory = (category_id, house_id) => {
-    return locateItems(
-        null,
-        {
-            model: RoomsTable,
-            include: [{
-                model: HouseTable,
-                where: {
-                    id: house_id
-                }
-            }]
-        },
-        {
-            model: CategoriesTable,
-            where: {id: category_id}
-        }
-    );
+	return locateItems(
+		null,
+		{
+			model: RoomsTable,
+			include: [{
+				model: HouseTable,
+				where: {
+					id: house_id
+				}
+			}]
+		},
+		{
+			model: CategoriesTable,
+			where: {id: category_id}
+		}
+	);
 };
 
 /**
@@ -233,76 +233,76 @@ Items.findItemsByCategory = (category_id, house_id) => {
  * @returns {*}
  */
 Items.createItem = (item, house_id) => {
-    debug("addItem");
-    delete item.id;
-    return Items.findItemByName(item.name, house_id)
-        .then((find_result) => {
-            if (find_result != "") {
-                return Promise.reject({
-                    location: "Items.addItem find previous",
-                    showMessage: "Item with same name already exists in the house",
-                    status: 400
-                })
-            }
+	debug("addItem");
+	delete item.id;
+	return Items.findItemByName(item.name, house_id)
+		.then((find_result) => {
+			if (find_result != "") {
+				return Promise.reject({
+					location: "Items.addItem find previous",
+					showMessage: "Item with same name already exists in the house",
+					status: 400
+				})
+			}
 
-            item.house_id = house_id;
-            console.log("item: ", item);
-            return ItemsTable.create(item)
-                .catch((error) => {
-                    return Promise.reject({
-                        error: error,
-                        message: "sequelize_error",
-                        location: "Items.addItem sequelize create",
-                        showMessage: error.showMessage || "Error creating item",
-                        status: error.status || 500
-                    });
-                })
-                .then((create_result) => {
-                    let connect_category = Promise.resolve("");
-                    if (item.categories) {
-                        connect_category = Promise.map(item.categories, (category) => {
-                            return category
-                        })
-                    }
-                    return connect_category.then(() => {
-                        return {id: create_result.dataValues.id};
-                    })
-                });
-        });
+			item.house_id = house_id;
+			console.log("item: ", item);
+			return ItemsTable.create(item)
+				.catch((error) => {
+					return Promise.reject({
+						error: error,
+						message: "sequelize_error",
+						location: "Items.addItem sequelize create",
+						showMessage: error.showMessage || "Error creating item",
+						status: error.status || 500
+					});
+				})
+				.then((create_result) => {
+					let connect_category = Promise.resolve("");
+					if (item.categories) {
+						connect_category = Promise.map(item.categories, (category) => {
+							return category
+						})
+					}
+					return connect_category.then(() => {
+						return {id: create_result.dataValues.id};
+					})
+				});
+		});
 };
 
 Items.updateItem = (id, item) => {
-    debug("updateItem");
-    let categories = item.categories;
-    return ItemsTable.update(item, {
-        where: {
-            id: id
-        }
-    }).catch((error) => {
-        return Promise.reject({
-            error: error,
-            message: "sequelize_error",
-            location: "Items.updateItem sequelize update",
-            showMessage: error.showMessage || "Error trying to update item: " + id,
-            status: error.status || 500
-        });
-    }).then((updateResult) => {
-        if (updateResult[0] === 0) {
-            return Promise.reject({
-                errors: ITEM_NOT_FOUND,
-                location: "Items.updateItem",
-                showMessage: "Item ID: " + id + " not found",
-                status: 404
-            });
-        }
-        return ItemsTable.find({
-            where: {id: id}
-        }).then((item) => {
-            return updateCategories(item, categories).then(() => {
-                return Items.getItem(id);
-            });
-        })
-    });
+	debug("updateItem");
+	let categories = item.categories;
+	return ItemsTable.update(item, {
+		where: {
+			id: id
+		}
+	}).catch((error) => {
+		return Promise.reject({
+			error: error,
+			message: "sequelize_error",
+			location: "Items.updateItem sequelize update",
+			showMessage: error.showMessage || "Error trying to update item: " + id,
+			status: error.status || 500
+		});
+	}).then((updateResult) => {
+		if (updateResult[0] === 0) {
+			return Promise.reject({
+				errors: ITEM_NOT_FOUND,
+				location: "Items.updateItem",
+				showMessage: "Item ID: " + id + " not found",
+				status: 404
+			});
+		}
+		return ItemsTable.find({
+			where: {id: id}
+		}).then((item) => {
+			return updateCategories(item, categories).then(() => {
+				return Items.getItem(id);
+			});
+		})
+	});
 };
 
 /**
@@ -311,22 +311,22 @@ Items.updateItem = (id, item) => {
  * @returns boolean True means something was deleted
  */
 Items.deleteItem = (id) => {
-    debug("deleteItem");
-    return ItemsTable.destroy({
-        where: {
-            id: id
-        }
-    }).then((destroyResults) => {
-        if (destroyResults === 0) {
-            return Promise.reject({
-                errors: ITEM_NOT_FOUND,
-                location: "Items.deleteItem",
-                showMessage: "Item ID: " + id + " not found",
-                status: 404
-            });
-        }
-        return destroyResults;
-    });
+	debug("deleteItem");
+	return ItemsTable.destroy({
+		where: {
+			id: id
+		}
+	}).then((destroyResults) => {
+		if (destroyResults === 0) {
+			return Promise.reject({
+				errors: ITEM_NOT_FOUND,
+				location: "Items.deleteItem",
+				showMessage: "Item ID: " + id + " not found",
+				status: 404
+			});
+		}
+		return destroyResults;
+	});
 };
 
 /**
@@ -337,27 +337,27 @@ Items.deleteItem = (id) => {
  * @returns [object]        Array of objects
  */
 function locateItems(item_where, included_room, extra_include) {
-    let room_include = [included_room, CATEGORY_INCLUDE].concat(extra_include);
+	let room_include = [included_room, CATEGORY_INCLUDE].concat(extra_include);
 
-    if (extra_include == null) {
-        room_include = [room_include[0], CATEGORY_INCLUDE];
-    }
+	if (extra_include == null) {
+		room_include = [room_include[0], CATEGORY_INCLUDE];
+	}
 
-    return ItemsTable.findAll(
-        {
-            attributes: ITEM_ATTRIBUTES,
-            where: item_where,
-            include: room_include
-        })
-        .catch((error) => {
-            return Promise.reject({
-                error: error,
-                message: "sequelize_error",
-                location: "locateItems sequelize findall",
-                showMessage: error.showMessage || "Error trying to find all items",
-                status: error.status || 500
-            });
-        })
+	return ItemsTable.findAll(
+		{
+			attributes: ITEM_ATTRIBUTES,
+			where: item_where,
+			include: room_include
+		})
+		.catch((error) => {
+			return Promise.reject({
+				error: error,
+				message: "sequelize_error",
+				location: "locateItems sequelize findall",
+				showMessage: error.showMessage || "Error trying to find all items",
+				status: error.status || 500
+			});
+		})
 }
 
 /**
@@ -366,12 +366,12 @@ function locateItems(item_where, included_room, extra_include) {
  * @param categories
  */
 function updateCategories(item, categories) {
-    debug("updateCategories");
-    return Promise.map(categories, (CategoryId)=> {
-        return CategoriesTable.find({
-            where: {id: CategoryId}
-        })
-    }).then((category_objects) => {
-        return item.setCategories(category_objects);
-    });
+	debug("updateCategories");
+	return Promise.map(categories, (CategoryId)=> {
+		return CategoriesTable.find({
+			where: {id: CategoryId}
+		})
+	}).then((category_objects) => {
+		return item.setCategories(category_objects);
+	});
 }
